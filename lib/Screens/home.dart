@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,11 +13,14 @@ import 'package:timeline_list/timeline_model.dart';
 import 'item1.dart';
 import 'item2.dart';
 import '../camara.dart';
+import '../Notifications.dart';
 
 import 'package:sandbox_flutter/Components/MiCard.dart';
 import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -246,13 +250,14 @@ class _FirebaseBridgeState extends State<FirebaseBridge> {
     return Container(
         child: Column(
       children: <Widget>[
+        //Notifications()
         RaisedButton(
           child: const Text('Connect with Twitter'),
           color: Theme.of(context).accentColor,
           elevation: 4.0,
           splashColor: Colors.blueGrey,
           onPressed: () {
-            takePhoto();
+            fetchPost();
           },
         ),
         Center(
@@ -263,6 +268,30 @@ class _FirebaseBridgeState extends State<FirebaseBridge> {
     ));
   }
 
+  Future<http.Response> fetchPost() {
+    Map<String, String> userHeader = {'Authorization':
+          'key=AAAArSM6NeE:APA91bFjlUNKt7peO2SXXKjF1rB4g-clSTS-dK2g2zdUZk61a8eyQd2xhHthABYWNnWeAv4ajjG94KI_NPixwQXIJQ6Gdd0cmYAla4MpD7sazXleVW-4kLpK98yN69kMko13RXG9vJ5M',
+      'Content-Type': 'application/json'};
+    
+    String data = json.encode( {
+      "to" : "dORNBLE8QDY:APA91bHMXBorfBlyxPH-L1F_PkvPvMykRSRZ-fL0wl1OoiwbICZaMDUVRhFp8QtD0VaxjO8fveSEi9x5t0zqHO3zVk6_M9rhKGCQSIX4P7wKZC6mMaK74XHArftSTgbWIrKhtHgV0BeU",
+      "collapse_key" : "type_a",
+      "notification" : {
+          "body" : "lerolero!!",
+          "title": "cacholero!"
+      }
+    });
+
+
+    http.post('https://fcm.googleapis.com/fcm/send', body: data, headers: userHeader).then((response) {
+      if (response.statusCode == 200) {
+        print("Number of books about http lala.");
+      } else {
+        print("Request failed with status: ${response.statusCode}.");
+      }
+    });
+  }
+
   void takePhoto() async {
     //String nombreAdrian = await getAdrian();
 
@@ -271,8 +300,6 @@ class _FirebaseBridgeState extends State<FirebaseBridge> {
     // marce.apellido = 'Caminos';
     // marce.edad = 60;
     // marce.update();
-
-    
   }
 
   Future<String> getAdrian() async {
