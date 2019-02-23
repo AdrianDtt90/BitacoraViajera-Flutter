@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "743620359649",
+    "firebase_url": "https://bitacoraviajera-33b25.firebaseio.com",
+    "project_id": "bitacoraviajera-33b25",
+    "storage_bucket": "bitacoraviajera-33b25.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743620359649:android:eea89114cfc737d9",
+        "android_client_info": {
+          "package_name": "com.example.sandboxflutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "743620359649-3h0lua5d5aun3j5na7n4p07emnd9ls2v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWxe6I_139vBGOO4ms6fauN6Ww4NbwdeI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
