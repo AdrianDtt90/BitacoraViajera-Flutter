@@ -12,8 +12,8 @@ import 'package:timeline_list/timeline_model.dart';
 
 import 'item1.dart';
 import 'item2.dart';
-import '../camara.dart';
-import '../Notifications.dart';
+import 'package:sandbox_flutter/Funcionalidades/Camara.dart';
+import 'package:sandbox_flutter/Funcionalidades/Notifications.dart';
 
 import 'package:sandbox_flutter/Components/MiCard.dart';
 import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
