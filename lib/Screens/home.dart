@@ -12,17 +12,10 @@ import 'package:timeline_list/timeline_model.dart';
 
 import 'item1.dart';
 import 'item2.dart';
-import 'package:sandbox_flutter/MyWidgets/MyImagePicker.dart';
-import 'package:sandbox_flutter/MyWidgets/MyNotifications.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 
 import 'package:sandbox_flutter/Components/MiCard.dart';
 import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert' as convert;
-import 'package:http/http.dart' as http;
-
-import 'package:image_picker/image_picker.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
