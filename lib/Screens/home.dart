@@ -12,8 +12,8 @@ import 'package:timeline_list/timeline_model.dart';
 
 import 'item1.dart';
 import 'item2.dart';
-import 'package:sandbox_flutter/Funcionalidades/Camara.dart';
-import 'package:sandbox_flutter/Funcionalidades/Notifications.dart';
+import 'package:sandbox_flutter/MyWidgets/MyImagePicker.dart';
+import 'package:sandbox_flutter/MyWidgets/MyNotifications.dart';
 
 import 'package:sandbox_flutter/Components/MiCard.dart';
 import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
@@ -21,6 +21,8 @@ import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+
+import 'package:image_picker/image_picker.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -76,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CameraApp()),
+                  MaterialPageRoute(builder: (context) => Item1Screen()),
                 );
               },
             ),
@@ -192,7 +194,7 @@ class SecondScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FirebaseBridge();
+    return MyImagePicker();
   }
 }
 
@@ -224,104 +226,5 @@ class ThirdScreen extends StatelessWidget {
         ),
       ],
     ));
-  }
-}
-
-class FirebaseBridge extends StatefulWidget {
-  FirebaseBridge({Key key}) : super(key: key);
-
-  @override
-  _FirebaseBridgeState createState() => _FirebaseBridgeState();
-}
-
-class _FirebaseBridgeState extends State<FirebaseBridge> {
-  File _image;
-
-  @override
-  void initState() {
-    super.initState();
-    //main();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //main();
-
-    return Container(
-        child: Column(
-      children: <Widget>[
-        //Notifications()
-        RaisedButton(
-          child: const Text('Connect with Twitter'),
-          color: Theme.of(context).accentColor,
-          elevation: 4.0,
-          splashColor: Colors.blueGrey,
-          onPressed: () {
-            fetchPost();
-          },
-        ),
-        Center(
-          child:
-              _image == null ? Text('No image selected.') : Image.file(_image),
-        )
-      ],
-    ));
-  }
-
-  Future<http.Response> fetchPost() {
-    Map<String, String> userHeader = {'Authorization':
-          'key=AAAArSM6NeE:APA91bFjlUNKt7peO2SXXKjF1rB4g-clSTS-dK2g2zdUZk61a8eyQd2xhHthABYWNnWeAv4ajjG94KI_NPixwQXIJQ6Gdd0cmYAla4MpD7sazXleVW-4kLpK98yN69kMko13RXG9vJ5M',
-      'Content-Type': 'application/json'};
-    
-    String data = json.encode( {
-      "to" : "dORNBLE8QDY:APA91bHMXBorfBlyxPH-L1F_PkvPvMykRSRZ-fL0wl1OoiwbICZaMDUVRhFp8QtD0VaxjO8fveSEi9x5t0zqHO3zVk6_M9rhKGCQSIX4P7wKZC6mMaK74XHArftSTgbWIrKhtHgV0BeU",
-      "collapse_key" : "type_a",
-      "notification" : {
-          "body" : "lerolero!!",
-          "title": "cacholero!"
-      }
-    });
-
-
-    http.post('https://fcm.googleapis.com/fcm/send', body: data, headers: userHeader).then((response) {
-      if (response.statusCode == 200) {
-        print("Number of books about http lala.");
-      } else {
-        print("Request failed with status: ${response.statusCode}.");
-      }
-    });
-  }
-
-  void takePhoto() async {
-    //String nombreAdrian = await getAdrian();
-
-    // Persona marce = await Persona.create('lele','lili',61);
-    // marce.nombre = 'Marcela';
-    // marce.apellido = 'Caminos';
-    // marce.edad = 60;
-    // marce.update();
-  }
-
-  Future<String> getAdrian() async {
-    DocumentSnapshot querySnapshot = await Firestore.instance
-        .collection('personas')
-        .document('jsN1mcA5Ln6Zz2cyXhWc')
-        .get();
-    if (querySnapshot.exists) {
-      // Create a new List<String> from List<dynamic>
-      return querySnapshot.data['nombre'];
-    }
-
-    return '';
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    return Padding(
-      key: ValueKey(data['nombre']),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-          child: Text(
-              'Nombre: ${data['nombre']}, Apellido: ${data['apellido']}, Edad: ${data['edad']}')),
-    );
   }
 }

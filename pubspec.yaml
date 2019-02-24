@@ -21,11 +21,19 @@ dependencies:
   flutter_swiper : ^1.1.4
   cloud_firestore: 
   multipart_request: 
-  camera: 
-  path_provider:
-  video_player:
   firebase_messaging: ^4.0.0+1
   http:
+
+  #Camera
+  ## camera: 
+  ## path_provider:
+  ## video_player:
+
+  #Croper
+  image_cropper: ^1.0.0
+
+  #Image picker
+  image_picker: 0.4.12+1
     
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
