@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sandbox_flutter/Redux/index.dart';
 
 import 'Screens/home.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyLoginFacebook/index.dart';
+
+import 'package:sandbox_flutter/Redux/index.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -10,22 +14,25 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool isLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-          child: isLoggedIn ? MyHomePage() : login(),
-        );
+        child: new StoreConnector<Map<String,dynamic>, bool>(
+      converter: (store) {
+        return store.state['userLogin'];
+      },
+      builder: (context, userLogin) {
+        return userLogin ? MyHomePage() : login();
+      },
+    ));
   }
 
-  Widget login () {
-    void _onLoggedInOk() { 
-      setState(() {
-        isLoggedIn = true;
-      });
+  Widget login() {
+    void _onLoggedInOk() {
+      store.dispatch(Actions.UserLogin);
     }
-    
+
     return new LoginFacebook(_onLoggedInOk);
   }
 }
