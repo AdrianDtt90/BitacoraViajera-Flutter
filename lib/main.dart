@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Screens/home.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyNotifications.dart';
-
-import 'package:sandbox_flutter/MyFunctionalities/MyLoginFacebook/index.dart';
+import 'package:sandbox_flutter/login.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -11,6 +9,6 @@ void main() {
       // on the FirstScreen Widget
       home: Stack(children: <Widget>[
         Notifications(), //Listener Notifications
-        LoginFacebook() //Login Facebok y Redirección
+        Login() //Login Facebok y Redirección
       ])));
 }
