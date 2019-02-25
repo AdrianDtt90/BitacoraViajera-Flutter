@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Flutter View</string>
+    <string name="title">Flutter Application</string>
+    <string name="button_tap">Flutter button tapped 0 times.</string>
+    <string name="android">Android</string>
+
+    <string name="facebook_app_id">322552378619138</string>
+    <string name="fb_login_protocol_scheme">fb322552378619138</string>
+</resources>

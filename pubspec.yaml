@@ -15,14 +15,31 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  #Calendar
   flutter_calendar_carousel: ^1.3.11
+
+  #Home Timeline
   timeline: ^0.0.1
   timeline_list: ^0.0.3
+
+  #Photo Swiper
   flutter_swiper : ^1.1.4
+
+  #Data Strore Firebase
   cloud_firestore: 
+
+  #Multirequest Upload Image
   multipart_request: 
+
+  #Notifications Firebase
   firebase_messaging: ^4.0.0+1
+
+  #Request library
   http:
+
+  #Facebook Login
+  flutter_facebook_login:
 
   #Camera
   ## camera: 
