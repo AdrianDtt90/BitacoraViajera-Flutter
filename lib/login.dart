@@ -4,6 +4,7 @@ import 'package:sandbox_flutter/Redux/index.dart';
 
 import 'Screens/home.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyLoginFacebook/index.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyLoginGoogleFirebase/index.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -29,10 +30,10 @@ class _LoginState extends State<Login> {
   }
 
   Widget login() {
-    void _onLoggedInOk() {
+    void _onLoggedInOk(loggedUser) {
       store.dispatch(Actions.UserLogin);
     }
 
-    return new LoginFacebook(_onLoggedInOk);
+    return new MyLoginGoogleFirebase(_onLoggedInOk);
   }
 }

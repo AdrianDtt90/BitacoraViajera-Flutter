@@ -26,14 +26,16 @@ dependencies:
   #Photo Swiper
   flutter_swiper : ^1.1.4
 
-  #Data Strore Firebase
-  cloud_firestore: 
-
   #Multirequest Upload Image
   multipart_request: 
 
-  #Notifications Firebase
+  #Firebase
   firebase_messaging: ^4.0.0+1
+  firebase_core: ^0.2.5+1
+  firebase_auth: ^0.6.2+1
+  cloud_firestore: 
+  google_sign_in: ^3.2.1
+  firestore_ui: ^1.1.1
 
   #Request library
   http:
