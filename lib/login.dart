@@ -19,19 +19,19 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: new StoreConnector<Map<String,dynamic>, bool>(
+        child: new StoreConnector<Map<String,dynamic>, Map<String, dynamic>>(
       converter: (store) {
         return store.state['userLogin'];
       },
       builder: (context, userLogin) {
-        return userLogin ? MyHomePage() : login();
+        return (userLogin != null && userLogin.isNotEmpty == true) ? MyHomePage() : login();
       },
     ));
   }
 
   Widget login() {
     void _onLoggedInOk(loggedUser) {
-      store.dispatch(Actions.UserLogin);
+      store.dispatch(new LoggedUserAction(loggedUser));
     }
 
     return new MyLoginGoogleFirebase(_onLoggedInOk);

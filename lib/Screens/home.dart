@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
@@ -61,7 +62,12 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Text('Drawer Header'),
+              child: new StoreConnector<Map<String, dynamic>, Map<String, dynamic>>(
+                converter: (store) => store.state['userLogin'],
+                builder: (context, userLogin) {
+                  return Text('Bienvenido ${userLogin['displayName']}');
+                },
+              ),
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),

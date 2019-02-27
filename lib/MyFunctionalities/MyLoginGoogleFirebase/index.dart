@@ -19,7 +19,7 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
   final FirebaseAuth _fAuth = FirebaseAuth.instance;
   final GoogleSignIn _gSignIn = new GoogleSignIn();
 
-  Future<FirebaseUser> _signIn(BuildContext context) async {
+  Future<Map<String, dynamic>> _signIn(BuildContext context) async {
     Scaffold.of(context).showSnackBar(new SnackBar(
           content: new Text('Sign in button clicked'),
         ));
@@ -34,23 +34,8 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
 
     UserInfoDetails userInfo = new UserInfoDetails(
         user.providerId, user.displayName, user.email, user.photoUrl, user.uid);
-
-    List<UserInfoDetails> providerData = new List<UserInfoDetails>();
-    providerData.add(userInfo);
-
-    UserDetails details = new UserDetails(
-        user.providerId,
-        user.uid,
-        user.displayName,
-        user.photoUrl,
-        user.email,
-        user.isAnonymous,
-        user.isEmailVerified,
-        providerData);
-
-    print("User Name : ${user.displayName}");
     
-    return user;
+    return userInfo.toJson();
   }
 
   void _signOut(BuildContext context) {
@@ -85,7 +70,7 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
                           //padding: new EdgeInsets.all(16.0),
                           minWidth: 150.0,
                           onPressed: () => _signIn(context)
-                              .then((FirebaseUser user) {
+                              .then((Map<String, dynamic> user) {
                                 widget.onLoggedInOk(user);
                               })
                               .catchError((e) => print(e)),
@@ -159,6 +144,29 @@ class UserDetails {
 
   UserDetails(this.providerId, this.uid, this.displayName, this.photoUrl,
       this.email, this.isAnonymous, this.isEmailVerified, this.providerData);
+
+  //Json configuration
+  UserDetails.fromJson(Map<String, dynamic> json)
+      : providerId = json['providerId'],
+        uid = json['uid'],
+        displayName = json['displayName'],
+        photoUrl = json['photoUrl'],
+        email = json['email'],
+        isAnonymous = json['isAnonymous'],
+        isEmailVerified = json['isEmailVerified'],
+        providerData = json['providerData'];
+
+  Map<String, dynamic> toJson() =>
+    {
+      'providerId': providerId,
+      'uid': uid,
+      'displayName': displayName,
+      'photoUrl': photoUrl,
+      'email': email,
+      'isAnonymous': isAnonymous,
+      'isEmailVerified': isEmailVerified,
+      'providerData': providerData,
+    };
 }
 
 class UserInfoDetails {
@@ -179,4 +187,21 @@ class UserInfoDetails {
 
   /// The user’s email address.
   final String email;
+
+  //Json configuration
+  UserInfoDetails.fromJson(Map<String, dynamic> json)
+      : providerId = json['providerId'],
+        displayName = json['displayName'],
+        email = json['email'],
+        photoUrl = json['photoUrl'],
+        uid = json['uid'];
+
+  Map<String, dynamic> toJson() =>
+    {
+      'providerId': providerId,
+      'displayName': displayName,
+      'email': email,
+      'photoUrl': photoUrl,
+      'uid': uid,
+    };
 }
