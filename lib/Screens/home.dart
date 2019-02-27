@@ -70,8 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
             DrawerHeader(
               child: new StoreConnector<Map<String, dynamic>,
                   Map<String, dynamic>>(
-                converter: (store) => store.state['userLogin'],
-                builder: (context, userLogin) {
+                converter: (store) => store.state['loggedUser'],
+                builder: (context, loggedUser) {
                   return Column(children: <Widget>[
                     Container(
                         width: 100.0,
@@ -81,10 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             image: new DecorationImage(
                                 fit: BoxFit.fill,
                                 image: new NetworkImage(
-                                    "${userLogin['photoUrl']}")))),
+                                    "${loggedUser['photoUrl']}")))),
                     Container(
                         margin: const EdgeInsets.only(top: 10.0),
-                        child: Text('Bienvenido ${userLogin['displayName']}',
+                        child: Text('Bienvenido ${loggedUser['displayName']}',
                             style: TextStyle(
                                 color: Color.fromRGBO(255, 255, 255, 1))))
                   ]);

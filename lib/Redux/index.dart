@@ -2,7 +2,7 @@ import 'package:redux/redux.dart';
 
 //Initial State
 Map<String,dynamic> initialState = {
-  "userLogin": null
+  "loggedUser": null
 };
 
 //Store
@@ -13,12 +13,12 @@ final store = new Store<Map<String,dynamic>>(counterReducer, initialState: initi
 Map<String,dynamic> counterReducer(Map<String,dynamic> state, dynamic action) {
   
   if (action is LogInAction) {
-    state['userLogin'] = action.user;
+    state['loggedUser'] = action.user;
     return state;
   }
 
   if (action is LogOutAction) {
-    state['userLogin'] = null;
+    state['loggedUser'] = null;
     return state;
   }
 

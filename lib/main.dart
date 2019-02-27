@@ -46,10 +46,10 @@ class _MainState extends State<Main> {
     return Container(
         child: new StoreConnector<Map<String,dynamic>, Map<String, dynamic>>(
       converter: (store) {
-        return store.state['userLogin'];
+        return store.state['loggedUser'];
       },
-      builder: (context, userLogin) {
-        return (userLogin != null && userLogin.isNotEmpty == true) ? MyHomePage() : login();
+      builder: (context, loggedUser) {
+        return (loggedUser != null && loggedUser.isNotEmpty == true) ? MyHomePage() : login();
       },
     ));
   }
