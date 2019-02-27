@@ -62,10 +62,26 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: new StoreConnector<Map<String, dynamic>, Map<String, dynamic>>(
+              child: new StoreConnector<Map<String, dynamic>,
+                  Map<String, dynamic>>(
                 converter: (store) => store.state['userLogin'],
                 builder: (context, userLogin) {
-                  return Text('Bienvenido ${userLogin['displayName']}');
+                  return Column(children: <Widget>[
+                    Container(
+                        width: 100.0,
+                        height: 100.0,
+                        decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.fill,
+                                image: new NetworkImage(
+                                    "${userLogin['photoUrl']}")))),
+                    Container(
+                        margin: const EdgeInsets.only(top: 10.0),
+                        child: Text('Bienvenido ${userLogin['displayName']}',
+                            style: TextStyle(
+                                color: Color.fromRGBO(255, 255, 255, 1))))
+                  ]);
                 },
               ),
               decoration: BoxDecoration(
