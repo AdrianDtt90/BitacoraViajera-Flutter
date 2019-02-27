@@ -12,8 +12,13 @@ final store = new Store<Map<String,dynamic>>(counterReducer, initialState: initi
 // Reducer
 Map<String,dynamic> counterReducer(Map<String,dynamic> state, dynamic action) {
   
-  if (action is LoggedUserAction) {
+  if (action is LogInAction) {
     state['userLogin'] = action.user;
+    return state;
+  }
+
+  if (action is LogOutAction) {
+    state['userLogin'] = null;
     return state;
   }
 
@@ -21,8 +26,12 @@ Map<String,dynamic> counterReducer(Map<String,dynamic> state, dynamic action) {
 }
 
 //Classes Actions
-class LoggedUserAction {
+class LogInAction {
   final Map<String,dynamic> user;
 
-  LoggedUserAction(this.user);
+  LogInAction(this.user);
+}
+
+class LogOutAction {
+  LogOutAction();
 }

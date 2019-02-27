@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
+import 'package:sandbox_flutter/Redux/index.dart';
 
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
@@ -18,6 +20,8 @@ import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 import 'package:sandbox_flutter/Components/MiCard.dart';
 import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
 
+import 'package:sandbox_flutter/MyFunctionalities/MyLoginGoogleFirebase/index.dart';
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
 
@@ -28,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   int _count = 0;
+  
+  final GoogleSignIn _gSignIn = new GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +112,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
+            ListTile(
+              title: Text('Cerrar Sesión'),
+              onTap: () {
+                store.dispatch(new LogOutAction());
+                _gSignIn.signOut();
+              },
+            )
           ],
         ),
       ),

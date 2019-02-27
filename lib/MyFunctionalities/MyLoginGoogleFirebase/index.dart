@@ -19,10 +19,34 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
   final FirebaseAuth _fAuth = FirebaseAuth.instance;
   final GoogleSignIn _gSignIn = new GoogleSignIn();
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Color.fromRGBO(0, 173, 255, 1),
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(IconData(58730, fontFamily: 'MaterialIcons'), size: 100, color: Color.fromRGBO(255, 255, 255, 1)),
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: MaterialButton(
+              minWidth: 150.0,
+              onPressed: () =>
+                  _signIn(context).then((Map<String, dynamic> user) {
+                    widget.onLoggedInOk(user);
+                  }).catchError((e) => print(e)),
+              child: Text('Iniciar Sesión',
+                  style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+              color: Colors.lightBlueAccent,
+            )
+            )
+          ],
+        )));
+  }
+
   Future<Map<String, dynamic>> _signIn(BuildContext context) async {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-          content: new Text('Sign in button clicked'),
-        ));
 
     GoogleSignInAccount googleSignInAccount = await _gSignIn.signIn();
     GoogleSignInAuthentication authentication =
@@ -34,96 +58,15 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
 
     UserInfoDetails userInfo = new UserInfoDetails(
         user.providerId, user.displayName, user.email, user.photoUrl, user.uid);
-    
+
     return userInfo.toJson();
   }
 
   void _signOut(BuildContext context) {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-          content: new Text('Sign out button clicked'),
-        ));
-
     _gSignIn.signOut();
     print('Signed out');
   }
-
-  @override
-  Widget build(BuildContext context) {
-    final String userName = "Aseem";
-
-    return new MyInhWidget(
-        userName: userName,
-        child: new Scaffold(
-          //backgroundColor: Colors.blueGrey,
-          body: new Center(
-              child: new Container(
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                new Builder(
-                  builder: (BuildContext context) {
-                    return new Material(
-                      borderRadius: new BorderRadius.circular(30.0),
-                      child: new Material(
-                        elevation: 5.0,
-                        child: new MaterialButton(
-                          //padding: new EdgeInsets.all(16.0),
-                          minWidth: 150.0,
-                          onPressed: () => _signIn(context)
-                              .then((Map<String, dynamic> user) {
-                                widget.onLoggedInOk(user);
-                              })
-                              .catchError((e) => print(e)),
-                          child: new Text('Sign in with Google'),
-                          color: Colors.lightBlueAccent,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                new Builder(
-                  builder: (BuildContext context) {
-                    return new Material(
-                      borderRadius: new BorderRadius.circular(30.0),
-                      child: new Material(
-                        elevation: 5.0,
-                        child: new MaterialButton(
-                          minWidth: 150.0,
-                          onPressed: () => _signOut(context),
-                          child: new Text('Sign Out'),
-                          color: Colors.lightBlueAccent,
-                        ),
-                      ),
-                    );
-                  },
-                )
-              ],
-            ),
-          )),
-        ));
-  }
 }
-
-class MyInhWidget extends InheritedWidget {
-  const MyInhWidget({Key key, this.userName, Widget child})
-      : super(key: key, child: child);
-
-  final String userName;
-
-  //const MyInhWidget(userName, Widget child) : super(child: child);
-
-  @override
-  bool updateShouldNotify(MyInhWidget old) {
-    return userName != old.userName;
-  }
-
-  static MyInhWidget of(BuildContext context) {
-    // You could also just directly return the name here
-    // as there's only one field
-    return context.inheritFromWidgetOfExactType(MyInhWidget);
-  }
-}
-
 
 class UserDetails {
   final String providerId;
@@ -156,17 +99,16 @@ class UserDetails {
         isEmailVerified = json['isEmailVerified'],
         providerData = json['providerData'];
 
-  Map<String, dynamic> toJson() =>
-    {
-      'providerId': providerId,
-      'uid': uid,
-      'displayName': displayName,
-      'photoUrl': photoUrl,
-      'email': email,
-      'isAnonymous': isAnonymous,
-      'isEmailVerified': isEmailVerified,
-      'providerData': providerData,
-    };
+  Map<String, dynamic> toJson() => {
+        'providerId': providerId,
+        'uid': uid,
+        'displayName': displayName,
+        'photoUrl': photoUrl,
+        'email': email,
+        'isAnonymous': isAnonymous,
+        'isEmailVerified': isEmailVerified,
+        'providerData': providerData,
+      };
 }
 
 class UserInfoDetails {
@@ -196,12 +138,11 @@ class UserInfoDetails {
         photoUrl = json['photoUrl'],
         uid = json['uid'];
 
-  Map<String, dynamic> toJson() =>
-    {
-      'providerId': providerId,
-      'displayName': displayName,
-      'email': email,
-      'photoUrl': photoUrl,
-      'uid': uid,
-    };
+  Map<String, dynamic> toJson() => {
+        'providerId': providerId,
+        'displayName': displayName,
+        'email': email,
+        'photoUrl': photoUrl,
+        'uid': uid,
+      };
 }

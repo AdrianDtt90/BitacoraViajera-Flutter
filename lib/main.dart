@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:sandbox_flutter/login.dart';
 
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyNotifications.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sandbox_flutter/Redux/index.dart';
+
+import 'Screens/home.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyLoginFacebook/index.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyLoginGoogleFirebase/index.dart';
+
+import 'package:sandbox_flutter/Redux/index.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 void main() {
 
@@ -18,7 +28,37 @@ void main() {
       // on the FirstScreen Widget
       home: Stack(children: <Widget>[
         Notifications(), //Listener Notifications
-        Login() //Login Facebok and HomePage
+        Main() //Login Facebok and HomePage
       ])))
   );
+}
+
+
+class Main extends StatefulWidget {
+  @override
+  _MainState createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: new StoreConnector<Map<String,dynamic>, Map<String, dynamic>>(
+      converter: (store) {
+        return store.state['userLogin'];
+      },
+      builder: (context, userLogin) {
+        return (userLogin != null && userLogin.isNotEmpty == true) ? MyHomePage() : login();
+      },
+    ));
+  }
+
+  Widget login() {
+    void _onLoggedInOk(loggedUser) {
+      store.dispatch(new LogInAction(loggedUser));
+    }
+
+    return new MyLoginGoogleFirebase(_onLoggedInOk);
+  }
 }
