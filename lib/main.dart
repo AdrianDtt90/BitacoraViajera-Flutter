@@ -13,6 +13,8 @@ import 'Screens/home.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyLoginFacebook/index.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyLoginGoogleFirebase/index.dart';
 
+import 'package:sandbox_flutter/MyFunctionalities/MyGeolocation.dart';
+
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -49,7 +51,7 @@ class _MainState extends State<Main> {
         return store.state['loggedUser'];
       },
       builder: (context, loggedUser) {
-        return (loggedUser != null && loggedUser.isNotEmpty == true) ? MyHomePage() : login();
+        return MyGeolocation();
       },
     ));
   }
