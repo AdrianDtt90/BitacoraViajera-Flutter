@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MiCard extends StatelessWidget {
+
+class MiCard extends StatefulWidget {
   final String date;
   final double width;
   final double height;
@@ -10,22 +11,53 @@ class MiCard extends StatelessWidget {
       : super(key: key);
 
   @override
+  _MiCardState createState() => _MiCardState();
+}
+
+class _MiCardState extends State<MiCard> {
+  bool _favourite = false;
+
+  @override
   Widget build(BuildContext context) {
     return Container(
         margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
         child: Column(
           children: <Widget>[
-            Center(child: Text(date)),
+            Center(child: Text(widget.date)),
             SizedBox(
-                width: width,
-                height: height,
+                width: double.infinity,
+                height: widget.height,
                 child: Card(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(child: content),
-                    ],
+                    children: <Widget>[Container(child: widget.content)],
                   ),
+                )),
+            Container(
+                margin: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(right: 10.0),
+                      child: IconButton(
+                      icon: _favourite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+                      color: Colors.red,
+                      onPressed: () {
+                        setState(() {
+                          _favourite = _favourite ? false : true;
+                        });
+                      },
+                    )),
+                    Container(
+                      margin: const EdgeInsets.only(right: 10.0),
+                      child: IconButton(
+                      icon: const Icon(Icons.chat),
+                      color: Colors.grey,
+                      onPressed: () {
+                        
+                      },
+                    )),
+                  ],
                 ))
           ],
         ));

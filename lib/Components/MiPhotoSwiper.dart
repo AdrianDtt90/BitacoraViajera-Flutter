@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
-class MiPhotoSwiper extends StatelessWidget {
+class MiPhotoSwiper extends StatefulWidget {
   final String date;
   final double width;
   final double height;
@@ -11,11 +11,18 @@ class MiPhotoSwiper extends StatelessWidget {
       : super(key: key);
 
   @override
+  _MiPhotoSwiperState createState() => _MiPhotoSwiperState();
+}
+
+class _MiPhotoSwiperState extends State<MiPhotoSwiper> {
+  bool _favourite = false;
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Column(children: <Widget>[
-        Center(child: Text(date)),
+        Center(child: Text(widget.date)),
         Swiper(
           itemBuilder: (BuildContext context, int index) {
             return Container(
@@ -35,7 +42,33 @@ class MiPhotoSwiper extends StatelessWidget {
           itemWidth: 300.0,
           itemHeight: 400.0,
           layout: SwiperLayout.STACK,
-        )
+        ),
+        Container(
+            margin: const EdgeInsets.only(left: 10.0),
+            child: Row(
+              children: <Widget>[
+                Container(
+                    margin: const EdgeInsets.only(right: 10.0),
+                    child: IconButton(
+                      icon: _favourite
+                          ? Icon(Icons.favorite)
+                          : Icon(Icons.favorite_border),
+                      color: Colors.red,
+                      onPressed: () {
+                        setState(() {
+                          _favourite = _favourite ? false : true;
+                        });
+                      },
+                    )),
+                Container(
+                    margin: const EdgeInsets.only(right: 10.0),
+                    child: IconButton(
+                      icon: const Icon(Icons.chat),
+                      color: Colors.grey,
+                      onPressed: () {},
+                    )),
+              ],
+            ))
       ]),
     );
   }
