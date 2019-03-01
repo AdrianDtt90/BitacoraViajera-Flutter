@@ -51,7 +51,7 @@ class _MainState extends State<Main> {
         return store.state['loggedUser'];
       },
       builder: (context, loggedUser) {
-        return MyGeolocation();
+        return (loggedUser != null && loggedUser.isNotEmpty == true) ? MyHomePage() : login();
       },
     ));
   }
