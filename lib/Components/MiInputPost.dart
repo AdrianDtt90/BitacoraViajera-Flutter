@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker.dart';
 
 class MiInputPost extends StatefulWidget {
   MiInputPost({Key key}) : super(key: key);
@@ -90,7 +91,9 @@ class _MiInputPostState extends State<MiInputPost> {
                         //Map
                         icon: Icon(Icons.place),
                         color: Color.fromRGBO(232, 3, 3, 1),
-                        onPressed: () {},
+                        onPressed: () {
+                          _navigateAndReturnMap(context);
+                        },
                       ))
                 ]),
               )
@@ -155,15 +158,23 @@ class _MiInputPostState extends State<MiInputPost> {
   }
 
   //Agregar Imagen
+  _navigateAndReturnMap(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddressMap()),
+    );
+  }
+
+  //Agregar Imagen
   _navigateAndReturnImage(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ImgageCamera()),
+      MaterialPageRoute(builder: (context) => ImageCamera()),
     );
 
     if (result == null) {
       //Se rechazó foto
-
+      //No hacer nada
     } else {
       //Se tomó foto
       Map<String, dynamic> nuevaImagen = {'tipo': 'image', 'src': result};
@@ -178,16 +189,31 @@ class _MiInputPostState extends State<MiInputPost> {
   }
 }
 
-class ImgageCamera extends StatefulWidget {
-  ImgageCamera({Key key}) : super(key: key);
+class ImageCamera extends StatefulWidget {
+  ImageCamera({Key key}) : super(key: key);
 
   @override
-  _ImgageCameraState createState() => _ImgageCameraState();
+  _ImageCameraState createState() => _ImageCameraState();
 }
 
-class _ImgageCameraState extends State<ImgageCamera> {
+class _ImageCameraState extends State<ImageCamera> {
   @override
   Widget build(BuildContext context) {
     return MyImagePicker();
+  }
+}
+
+
+class AddressMap extends StatefulWidget {
+  AddressMap({Key key}) : super(key: key);
+
+  @override
+  _AddressMapState createState() => _AddressMapState();
+}
+
+class _AddressMapState extends State<AddressMap> {
+  @override
+  Widget build(BuildContext context) {
+    return MyMapPicker();
   }
 }
