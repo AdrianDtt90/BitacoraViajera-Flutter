@@ -19,6 +19,10 @@ class _MyImagePickerState extends State<MyImagePicker> {
     });
   }
 
+  void acceptPhoto() {
+    Navigator.pop(context, _image);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,17 +30,35 @@ class _MyImagePickerState extends State<MyImagePicker> {
           title: Text('Image Picker Example'),
         ),
         body: Center(
-          child:
-              _image == null ? Text('No image selected.') : Image.file(_image),
+          child: _image == null
+              ? Text('Tomar Foto')
+              : Stack(children: <Widget>[
+                  Center(
+                    child: Text("Cargando..."),
+                  ),
+                  Center(
+                    child: Image.file(_image)
+                  )
+                ]),
         ),
-        floatingActionButton: Center(
-          widthFactor: 6.8,
-          heightFactor: 1.0,
-          child: FloatingActionButton(
-            onPressed: getImage,
-            tooltip: 'Pick Image',
-            child: Icon(Icons.add_a_photo),
-          ),
-        ));
+        floatingActionButton: _image == null
+            ? Center(
+                widthFactor: 6.8,
+                heightFactor: 1.0,
+                child: FloatingActionButton(
+                  onPressed: getImage,
+                  tooltip: 'Tomar Foto',
+                  child: Icon(Icons.add_a_photo),
+                ),
+              )
+            : Center(
+                widthFactor: 6.8,
+                heightFactor: 1.0,
+                child: FloatingActionButton(
+                  backgroundColor: Color.fromRGBO(63, 187, 12, 1),
+                  onPressed: acceptPhoto,
+                  tooltip: 'Aceptar Foto',
+                  child: Icon(Icons.check),
+                )));
   }
 }

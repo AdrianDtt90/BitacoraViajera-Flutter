@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
+import 'package:sandbox_flutter/Components/MiComments.dart';
+
 class MiPhotoSwiper extends StatefulWidget {
   final String date;
   final double width;
@@ -65,11 +67,42 @@ class _MiPhotoSwiperState extends State<MiPhotoSwiper> {
                     child: IconButton(
                       icon: const Icon(Icons.chat),
                       color: Colors.grey,
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PostComments(post: 'Post ${widget.key}')),
+                          );
+                        });
+                      },
                     )),
               ],
             ))
       ]),
+    );
+  }
+}
+
+class PostComments extends StatefulWidget {
+  final String post;
+
+  PostComments({Key key, this.post}) : super(key: key);
+
+  @override
+  _PostCommentsState createState() => _PostCommentsState();
+}
+
+class _PostCommentsState extends State<PostComments> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.post}'),
+        ),
+        body: MiComments()
     );
   }
 }

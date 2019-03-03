@@ -20,7 +20,7 @@ import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 import 'package:sandbox_flutter/Components/MiCard.dart';
 import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
 
-import 'package:sandbox_flutter/MyFunctionalities/MyLoginGoogleFirebase/index.dart';
+import 'package:sandbox_flutter/Components/MiInputPost.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -31,8 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  int _count = 0;
-  
+
   final GoogleSignIn _gSignIn = new GoogleSignIn();
 
   @override
@@ -53,14 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: _selectedIndex,
         fixedColor: Colors.blue,
         onTap: _onItemTapped,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() {
-              _count++;
-            }),
-        tooltip: 'Increment Counter',
-        child: Icon(Icons.add),
-        elevation: 0.0,
       ),
       drawer: Drawer(
         child: ListView(
@@ -152,16 +143,25 @@ class ScreenRouter extends StatelessWidget {
   }
 }
 
-class FirstScreen extends StatelessWidget {
+class FirstScreen extends StatefulWidget {
   final int value;
 
   FirstScreen({Key key, this.value}) : super(key: key);
+
+  @override
+  _FirstScreenState createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> {
+  bool _openMiInputPost = false;
+
   static DateTime now = DateTime.now();
   static String formattedDate = DateFormat('kk:mm:ss  EEE d MMM').format(now);
 
   List<TimelineModel> items = [
     TimelineModel(
         MiPhotoSwiper(
+            key: Key("1"),
             date: formattedDate,
             width: 200.0,
             height: 300.0,
@@ -171,6 +171,7 @@ class FirstScreen extends StatelessWidget {
         icon: Icon(Icons.blur_circular, color: Colors.white)),
     TimelineModel(
         MiCard(
+            key: Key("2"),
             date: formattedDate,
             width: 300.0,
             height: 200.0,
@@ -180,6 +181,7 @@ class FirstScreen extends StatelessWidget {
         icon: Icon(Icons.blur_circular, color: Colors.white)),
     TimelineModel(
         MiCard(
+            key: Key("3"),
             date: formattedDate,
             width: 200.0,
             height: 100.0,
@@ -189,6 +191,7 @@ class FirstScreen extends StatelessWidget {
         icon: Icon(Icons.blur_circular, color: Colors.white)),
     TimelineModel(
         MiCard(
+            key: Key("4"),
             date: formattedDate,
             width: 300.0,
             height: 300.0,
@@ -198,6 +201,7 @@ class FirstScreen extends StatelessWidget {
         icon: Icon(Icons.blur_circular, color: Colors.white)),
     TimelineModel(
         MiCard(
+            key: Key("5"),
             date: formattedDate,
             width: 200.0,
             height: 300.0,
@@ -209,8 +213,25 @@ class FirstScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Timeline(children: items, position: TimelinePosition.Left),
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+            appBar: null,
+            body: Container(
+              child: Timeline(children: items, position: TimelinePosition.Left),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _openMiInputPost = !_openMiInputPost;
+                });
+              },
+              tooltip: 'Increment Counter',
+              child: Icon(Icons.add),
+              elevation: 0.0,
+            )),
+        _openMiInputPost ? MiInputPost() : Container()
+      ],
     );
   }
 }

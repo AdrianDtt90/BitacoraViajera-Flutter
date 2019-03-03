@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:sandbox_flutter/Components/MiComments.dart';
 
 class MiCard extends StatefulWidget {
   final String date;
@@ -16,6 +17,7 @@ class MiCard extends StatefulWidget {
 
 class _MiCardState extends State<MiCard> {
   bool _favourite = false;
+  bool _comments = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,28 +40,59 @@ class _MiCardState extends State<MiCard> {
                 child: Row(
                   children: <Widget>[
                     Container(
-                      margin: const EdgeInsets.only(right: 10.0),
-                      child: IconButton(
-                      icon: _favourite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
-                      color: Colors.red,
-                      onPressed: () {
-                        setState(() {
-                          _favourite = _favourite ? false : true;
-                        });
-                      },
-                    )),
+                        margin: const EdgeInsets.only(right: 10.0),
+                        child: IconButton(
+                          icon: _favourite
+                              ? Icon(Icons.favorite)
+                              : Icon(Icons.favorite_border),
+                          color: Colors.red,
+                          onPressed: () {
+                            setState(() {
+                              _favourite = _favourite ? false : true;
+                            });
+                          },
+                        )),
                     Container(
-                      margin: const EdgeInsets.only(right: 10.0),
-                      child: IconButton(
-                      icon: const Icon(Icons.chat),
-                      color: Colors.grey,
-                      onPressed: () {
-                        
-                      },
-                    )),
+                        margin: const EdgeInsets.only(right: 10.0),
+                        child: IconButton(
+                          icon: const Icon(Icons.chat),
+                          color: Colors.grey,
+                          onPressed: () {
+                            setState(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PostComments(post: 'Post ${widget.key}')),
+                              );
+                            });
+                          },
+                        ))
                   ],
                 ))
           ],
         ));
+  }
+}
+
+class PostComments extends StatefulWidget {
+  final String post;
+
+  PostComments({Key key, this.post}) : super(key: key);
+
+  @override
+  _PostCommentsState createState() => _PostCommentsState();
+}
+
+class _PostCommentsState extends State<PostComments> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.post}'),
+        ),
+        body: MiComments()
+    );
   }
 }
