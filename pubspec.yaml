@@ -46,6 +46,9 @@ dependencies:
   #Request library
   http:
 
+  #Map
+  google_maps_flutter: ^0.3.0+2
+
   #Facebook Login
   flutter_facebook_login:
 

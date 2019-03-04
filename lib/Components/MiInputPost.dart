@@ -157,12 +157,14 @@ class _MiInputPostState extends State<MiInputPost> {
     });
   }
 
-  //Agregar Imagen
+  //Agregar Mapa
   _navigateAndReturnMap(BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddressMap()),
     );
+
+    print(result);
   }
 
   //Agregar Imagen
