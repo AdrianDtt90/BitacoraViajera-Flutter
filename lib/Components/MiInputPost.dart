@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sandbox_flutter/Components/MiImage.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/index.dart';
@@ -155,7 +156,7 @@ class _MiInputPostState extends State<MiInputPost> {
               Container(
                 width: 150,
                 height: 150,
-                child: Image.file(element['src']),
+                child: MiImage(url: element['src'].path, fileType: 1), //Internal
               ),
               IconButton(
                 padding: const EdgeInsets.all(0.0),

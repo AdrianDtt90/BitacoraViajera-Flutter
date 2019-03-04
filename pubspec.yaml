@@ -23,8 +23,9 @@ dependencies:
   timeline: ^0.0.1
   timeline_list: ^0.0.3
 
-  #Photo Swiper
+  #Photo
   flutter_swiper : ^1.1.4
+  photo_view: ^0.2.1
 
   #Multirequest Upload Image
   multipart_request: 
