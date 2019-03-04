@@ -6,10 +6,14 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class MiImage extends StatefulWidget {
-  final String url;
-  final int fileType; // 0: External, 1:Internal, 2:Assets
+  final String currentUrl;
+  final int fileType;
+  //fileType; // 0: External, 1:Internal, 2:Assets
 
-  MiImage({Key key, this.url, this.fileType: 0}) : super(key: key);
+  List<Map<String, dynamic>> listImages;
+
+  MiImage({Key key, this.currentUrl, this.fileType: 0, this.listImages})
+      : super(key: key);
 
   @override
   _MiImageState createState() => _MiImageState();
@@ -23,11 +27,13 @@ class _MiImageState extends State<MiImage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    ImageViewer(url: widget.url, fileType: widget.fileType)),
+                builder: (context) => ImageViewer(
+                    currentUrl: widget.currentUrl,
+                    fileType: widget.fileType,
+                    listImages: widget.listImages)),
           );
         },
-        child: getImageWidget(widget.url, widget.fileType));
+        child: getImageWidget(widget.currentUrl, widget.fileType));
   }
 
   Widget getImageWidget(String url, int fileType) {
@@ -44,20 +50,26 @@ class _MiImageState extends State<MiImage> {
 }
 
 class ImageViewer extends StatelessWidget {
-  final String url;
+  final String currentUrl;
   final int fileType;
 
-  ImageViewer({Key key, this.url, this.fileType: 0}) : super(key: key);
+  List<Map<String, dynamic>> listImages;
+
+  ImageViewer({Key key, this.currentUrl, this.fileType: 0, this.listImages})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (url == null) return Container();
+    if (currentUrl == null) return Container();
 
-    return Container(
-        color: Colors.red,
-        child: PhotoView(
-          imageProvider: getImageWidget(url, fileType),
-        ));
+    dynamic src = PhotoView(
+      imageProvider: getImageWidget(currentUrl, fileType),
+    );
+    if (listImages == null || (listImages != null && listImages.length > 1)) {
+      src = getImagesViewer(listImages);
+    }
+
+    return Container(color: Colors.red, child: src);
   }
 
   dynamic getImageWidget(String url, int fileType) {
@@ -71,28 +83,30 @@ class ImageViewer extends StatelessWidget {
       default:
     }
   }
-}
 
-dynamic getImagesViewer(List<String> urls) {
-  if (urls == null) return Container();
+  dynamic getImagesViewer(List<Map<String, dynamic>> list) {
+    if (list == null) return Container();
 
-  List<PhotoViewGalleryPageOptions> listImages = new List();
-  int count = 1;
+    List<PhotoViewGalleryPageOptions> listSrc = new List();
+    int count = 1;
 
-  urls.forEach((url) {
-    listImages.add(PhotoViewGalleryPageOptions(
-      imageProvider: NetworkImage(url),
-      heroTag: "Image " + count.toString(),
+    list.forEach((image) {
+      if(image['src'] == null) return false;
+
+      listSrc.add(PhotoViewGalleryPageOptions(
+        imageProvider: getImageWidget(image['src'], image['fileType']),
+        heroTag: "Image " + count.toString(),
+      ));
+
+      count = count + 1;
+    });
+
+    if (listSrc.length == 0) return Container();
+
+    return Container(
+        child: PhotoViewGallery(
+      pageOptions: listSrc,
+      backgroundDecoration: BoxDecoration(color: Colors.black87),
     ));
-
-    count = count + 1;
-  });
-
-  if (listImages.length == 0) return Container();
-
-  return Container(
-      child: PhotoViewGallery(
-    pageOptions: listImages,
-    backgroundDecoration: BoxDecoration(color: Colors.black87),
-  ));
+  }
 }

@@ -156,7 +156,7 @@ class _MiInputPostState extends State<MiInputPost> {
               Container(
                 width: 150,
                 height: 150,
-                child: MiImage(url: element['src'].path, fileType: 1), //Internal
+                child: MiImage(currentUrl: element['src'], fileType: element['fileType'], listImages: _listaAdjuntos), //Internal
               ),
               IconButton(
                 padding: const EdgeInsets.all(0.0),
@@ -227,7 +227,7 @@ class _MiInputPostState extends State<MiInputPost> {
       //No hacer nada
     } else {
       //Se tomó foto
-      Map<String, dynamic> nuevaImagen = {'tipo': 'image', 'src': result};
+      Map<String, dynamic> nuevaImagen = {'tipo': 'image', 'fileType': 1, 'src': result.path};
 
       List<Map<String, dynamic>> listaAdjuntos = _listaAdjuntos;
       listaAdjuntos.add(nuevaImagen);
