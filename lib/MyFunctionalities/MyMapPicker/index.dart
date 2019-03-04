@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:sandbox_flutter/MyFunctionalities/MyAutocompleteAdress.dart';
-import 'package:sandbox_flutter/MyFunctionalities/MyGeolocation.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/MyAutocompleteAdress.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/MyGeolocation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyMapPicker extends StatefulWidget {
@@ -34,7 +34,6 @@ class _MyMapPickerState extends State<MyMapPicker> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
         key: scaffoldState,
         appBar: AppBar(
@@ -52,24 +51,41 @@ class _MyMapPickerState extends State<MyMapPicker> {
                       _setLatLon();
                     },
                     materialTapTargetSize: MaterialTapTargetSize.padded,
-                    backgroundColor: Colors.green,
                     child: const Icon(Icons.search, size: 36.0),
                   )),
             ),
-            RaisedButton(
-              child: Text("OK"),
-                onPressed: () {
-                  acceptMap();
-                }),
-            _resultFound==false ? _mostrarMensajeNoFound(context) : Container()
+            Padding(
+                padding: EdgeInsets.only(
+                    top: 90.0, left: 16.0, right: 16.0, bottom: 16.0),
+                child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                        width: 55,
+                        height: 55,
+                        decoration: new BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          color: Colors.white,
+                          icon: Icon(Icons.check, size: 36.0),
+                          tooltip: 'Increase volume by 10',
+                          onPressed: () {
+                            acceptMap();
+                          },
+                        )))),
+            _resultFound == false
+                ? _mostrarMensajeNoFound(context)
+                : Container()
           ],
         ));
   }
 
   Widget _mostrarMensajeNoFound(BuildContext context) {
-    scaffoldState.currentState.showSnackBar(new SnackBar(content: new Text('No se encontró el sitio buscado')));
+    scaffoldState.currentState.showSnackBar(
+        new SnackBar(content: new Text('No se encontró el sitio buscado')));
     setState(() {
-      _resultFound= true;
+      _resultFound = true;
     });
     return Container();
   }
@@ -169,6 +185,7 @@ class _SearchAddressState extends State<SearchAddress> {
 
   List<Widget> _listSugerencias;
   int _amountText = 0;
+  bool _isButtonDisabled = true;
 
   double _lat;
   double _lon;
@@ -181,7 +198,7 @@ class _SearchAddressState extends State<SearchAddress> {
       //print(_controller.text);
       _amountText = _amountText + 1;
 
-      Timer(new Duration(seconds: 2), () {
+      Timer(new Duration(seconds: 1), () {
         if (_amountText >= 3) {
           _amountText = 0;
 
@@ -189,6 +206,10 @@ class _SearchAddressState extends State<SearchAddress> {
           getSugerencia(_controller.text);
         }
         _amountText = 0;
+      });
+
+      setState(() {
+        _isButtonDisabled = true;
       });
     });
   }
@@ -219,25 +240,31 @@ class _SearchAddressState extends State<SearchAddress> {
           _listSugerencias != null
               ? Column(children: _listSugerencias)
               : Container(),
-          RaisedButton(
-            child: Text("Buscar en mapa"),
-            onPressed: () async {
-              var result = await calcularDireccion(_controller.text);
+          Padding(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+              child: RaisedButton(
+                child: _isButtonDisabled
+                    ? Text("Esperando selección...")
+                    : Text("Buscar direción"),
+                onPressed: () async {
+                  if (_isButtonDisabled == true) return false;
 
-              if (result != null) {
-                Map<String, dynamic> coordenadas = {
-                  "text": _controller.text,
-                  "lat": result['lat'],
-                  "lon": result['lon'],
-                };
+                  var result = await calcularDireccion(_controller.text);
 
-                Navigator.pop(context, coordenadas);
-              } else {
-                //No se encontró sitio
-                Navigator.pop(context, null);
-              }
-            },
-          )
+                  if (result != null) {
+                    Map<String, dynamic> coordenadas = {
+                      "text": _controller.text,
+                      "lat": result['lat'],
+                      "lon": result['lon'],
+                    };
+
+                    Navigator.pop(context, coordenadas);
+                  } else {
+                    //No se encontró sitio
+                    Navigator.pop(context, null);
+                  }
+                },
+              ))
         ]));
   }
 
@@ -254,6 +281,7 @@ class _SearchAddressState extends State<SearchAddress> {
           _controller.text = suggestion['label'];
           setState(() {
             _listSugerencias = [];
+            _isButtonDisabled = false;
           });
         },
       ));

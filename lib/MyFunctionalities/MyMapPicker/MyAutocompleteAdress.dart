@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 dynamic getAutocompleteAdress(String value) async {
+  if(value.length <=3) return {};
+  
   String inputAddress = value;
 
   inputAddress = inputAddress

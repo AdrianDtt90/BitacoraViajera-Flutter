@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
-import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/index.dart';
 
 class MiInputPost extends StatefulWidget {
   MiInputPost({Key key}) : super(key: key);
@@ -12,6 +12,7 @@ class MiInputPost extends StatefulWidget {
 
 class _MiInputPostState extends State<MiInputPost> {
   List<Map<String, dynamic>> _listaAdjuntos = new List();
+  Map<String, dynamic> mapa = null;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +70,40 @@ class _MiInputPostState extends State<MiInputPost> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
+              mapa != null ? Container(
+                width: double.infinity,
+                height: 50.0,
+                decoration:
+                    BoxDecoration(color: Color.fromRGBO(248, 248, 248, 1)),
+                child: Row(children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(bottom: 2.0),
+                      child: IconButton(
+                        //Map
+                        icon: Icon(Icons.place),
+                        color: Color.fromRGBO(232, 3, 3, 1),
+                        onPressed: () {
+                          _navigateAndReturnMap(context);
+                        },
+                      )),
+                  Flexible(
+                      child: Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Text(
+                              mapa['text'],
+                              overflow: TextOverflow.ellipsis))),
+                  IconButton(
+                        //Map
+                        icon: Icon(Icons.cancel),
+                        color: Colors.grey,
+                        onPressed: () {
+                          setState(() {
+                            mapa = null;
+                          });
+                        },
+                      )
+                ]),
+              ) : Container(),
               Container(
                 width: double.infinity,
                 height: 50.0,
@@ -85,7 +120,7 @@ class _MiInputPostState extends State<MiInputPost> {
                       _navigateAndReturnImage(context);
                     },
                   ),
-                  Padding(
+                  mapa == null ? Padding(
                       padding: EdgeInsets.only(bottom: 2.0),
                       child: IconButton(
                         //Map
@@ -94,7 +129,7 @@ class _MiInputPostState extends State<MiInputPost> {
                         onPressed: () {
                           _navigateAndReturnMap(context);
                         },
-                      ))
+                      )) : Container()
                 ]),
               )
             ],
@@ -148,7 +183,7 @@ class _MiInputPostState extends State<MiInputPost> {
   }
 
   //Eliminar adjunto
-  _elimiarAdjunto (Map<String, dynamic> element) {
+  _elimiarAdjunto(Map<String, dynamic> element) {
     List<Map<String, dynamic>> listaAdjuntos = _listaAdjuntos;
     listaAdjuntos.remove(element);
 
@@ -164,7 +199,19 @@ class _MiInputPostState extends State<MiInputPost> {
       MaterialPageRoute(builder: (context) => AddressMap()),
     );
 
-    print(result);
+    if (result == null) {
+      //Se rechazó foto
+      //No hacer nada
+    } else {
+      //Se encontró Mapa
+      setState(() {
+        mapa = {
+        "text": result['text'],
+        "lat": result['lat'],
+        "lon": result['lon']
+        };
+      });
+    }
   }
 
   //Agregar Imagen
@@ -204,7 +251,6 @@ class _ImageCameraState extends State<ImageCamera> {
     return MyImagePicker();
   }
 }
-
 
 class AddressMap extends StatefulWidget {
   AddressMap({Key key}) : super(key: key);
