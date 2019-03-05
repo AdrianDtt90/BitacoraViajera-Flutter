@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sandbox_flutter/Components/MiImage.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/index.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class MiInputPost extends StatefulWidget {
   MiInputPost({Key key}) : super(key: key);
@@ -71,40 +76,41 @@ class _MiInputPostState extends State<MiInputPost> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              mapa != null ? Container(
-                width: double.infinity,
-                height: 50.0,
-                decoration:
-                    BoxDecoration(color: Color.fromRGBO(248, 248, 248, 1)),
-                child: Row(children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(bottom: 2.0),
-                      child: IconButton(
-                        //Map
-                        icon: Icon(Icons.place),
-                        color: Color.fromRGBO(232, 3, 3, 1),
-                        onPressed: () {
-                          _navigateAndReturnMap(context);
-                        },
-                      )),
-                  Flexible(
-                      child: Padding(
-                          padding: EdgeInsets.only(right: 10.0),
-                          child: Text(
-                              mapa['text'],
-                              overflow: TextOverflow.ellipsis))),
-                  IconButton(
-                        //Map
-                        icon: Icon(Icons.cancel),
-                        color: Colors.grey,
-                        onPressed: () {
-                          setState(() {
-                            mapa = null;
-                          });
-                        },
-                      )
-                ]),
-              ) : Container(),
+              mapa != null
+                  ? Container(
+                      width: double.infinity,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(248, 248, 248, 1)),
+                      child: Row(children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(bottom: 2.0),
+                            child: IconButton(
+                              //Map
+                              icon: Icon(Icons.place),
+                              color: Color.fromRGBO(232, 3, 3, 1),
+                              onPressed: () {
+                                _navigateAndReturnMap(context);
+                              },
+                            )),
+                        Flexible(
+                            child: Padding(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: Text(mapa['text'],
+                                    overflow: TextOverflow.ellipsis))),
+                        IconButton(
+                          //Map
+                          icon: Icon(Icons.cancel),
+                          color: Colors.grey,
+                          onPressed: () {
+                            setState(() {
+                              mapa = null;
+                            });
+                          },
+                        )
+                      ]),
+                    )
+                  : Container(),
               Container(
                 width: double.infinity,
                 height: 50.0,
@@ -121,16 +127,26 @@ class _MiInputPostState extends State<MiInputPost> {
                       _navigateAndReturnImage(context);
                     },
                   ),
-                  mapa == null ? Padding(
-                      padding: EdgeInsets.only(bottom: 2.0),
-                      child: IconButton(
-                        //Map
-                        icon: Icon(Icons.place),
-                        color: Color.fromRGBO(232, 3, 3, 1),
-                        onPressed: () {
-                          _navigateAndReturnMap(context);
-                        },
-                      )) : Container()
+                  IconButton(
+                    //Camera
+                    icon: Icon(Icons.image),
+                    color: Color.fromRGBO(66, 103, 178, 1),
+                    onPressed: () {
+                      _getImageFromGallery();
+                    },
+                  ),
+                  mapa == null
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: 2.0),
+                          child: IconButton(
+                            //Map
+                            icon: Icon(Icons.place),
+                            color: Color.fromRGBO(232, 3, 3, 1),
+                            onPressed: () {
+                              _navigateAndReturnMap(context);
+                            },
+                          ))
+                      : Container()
                 ]),
               )
             ],
@@ -156,24 +172,30 @@ class _MiInputPostState extends State<MiInputPost> {
               Container(
                 width: 150,
                 height: 150,
-                child: MiImage(currentUrl: element['src'], fileType: element['fileType'], listImages: _listaAdjuntos), //Internal
+                child: MiImage(
+                    currentUrl: element['src'],
+                    fileType: element['fileType'],
+                    listImages: _listaAdjuntos), //Internal
               ),
-              IconButton(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.topLeft,
-                icon: Icon(Icons.cancel),
-                color: Color.fromRGBO(232, 3, 3, 1),
-                onPressed: () {
-                  _elimiarAdjunto(element);
-                },
+              Container(
+                margin: EdgeInsets.all(2),
+                width: 24,
+                height: 24,
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  padding: const EdgeInsets.all(0.0),
+                  icon: Icon(Icons.cancel),
+                  color: Color.fromRGBO(232, 3, 3, 1),
+                  onPressed: () {
+                    _elimiarAdjunto(element);
+                  },
+                ),
               )
             ],
           ));
-        }
-
-        //Mapa
-        if (element['tipo'] == 'map') {
-          listaAdjuntos.add(Text('Se esta programando'));
         }
       });
 
@@ -207,15 +229,51 @@ class _MiInputPostState extends State<MiInputPost> {
       //Se encontró Mapa
       setState(() {
         mapa = {
-        "text": result['text'],
-        "lat": result['lat'],
-        "lon": result['lon']
+          "text": result['text'],
+          "lat": result['lat'],
+          "lon": result['lon']
         };
       });
     }
   }
 
-  //Agregar Imagen
+  //Agregar Imagen desde GALERIA
+  _getImageFromGallery() async {
+    var result = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (result == null) {
+      //Se rechazó foto
+      //No hacer nada
+    } else {
+      //La Recortamos
+      File croppedImage = await ImageCropper.cropImage(
+          sourcePath: result.path,
+          ratioX: 1.0,
+          ratioY: 1.0,
+          maxWidth: 512,
+          maxHeight: 512,
+          toolbarTitle: "Editar Imagen",
+          toolbarColor: Color.fromRGBO(19, 137, 253, 1));
+
+      if (croppedImage == null) return false;
+
+      //Se tomó foto
+      Map<String, dynamic> nuevaImagen = {
+        'tipo': 'image',
+        'fileType': 1,
+        'src': croppedImage.path
+      };
+
+      List<Map<String, dynamic>> listaAdjuntos = _listaAdjuntos;
+      listaAdjuntos.add(nuevaImagen);
+
+      setState(() {
+        _listaAdjuntos = listaAdjuntos;
+      });
+    }
+  }
+
+  //Agregar Imagen desde CAMARA
   _navigateAndReturnImage(BuildContext context) async {
     final result = await Navigator.push(
       context,
@@ -227,7 +285,11 @@ class _MiInputPostState extends State<MiInputPost> {
       //No hacer nada
     } else {
       //Se tomó foto
-      Map<String, dynamic> nuevaImagen = {'tipo': 'image', 'fileType': 1, 'src': result.path};
+      Map<String, dynamic> nuevaImagen = {
+        'tipo': 'image',
+        'fileType': 1,
+        'src': result.path
+      };
 
       List<Map<String, dynamic>> listaAdjuntos = _listaAdjuntos;
       listaAdjuntos.add(nuevaImagen);
