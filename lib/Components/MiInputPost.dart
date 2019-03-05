@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sandbox_flutter/Components/MiImage.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
@@ -17,8 +18,32 @@ class MiInputPost extends StatefulWidget {
 }
 
 class _MiInputPostState extends State<MiInputPost> {
+  TextEditingController _controllerFecha = new TextEditingController();
+
   List<Map<String, dynamic>> _listaAdjuntos = new List();
   Map<String, dynamic> mapa = null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(now);
+    _controllerFecha.text = formattedDate;
+  }
+
+  void _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2018),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
+      _controllerFecha.text = formattedDate;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +62,28 @@ class _MiInputPostState extends State<MiInputPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(top: 20.0),
-                          child: Text(
-                            'Crear Publicación',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ))
+                      Expanded(
+                          child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(
+                                  color: Color.fromRGBO(18, 142, 249, 1),
+                                ),
+                                bottom: BorderSide(
+                                  color: Color.fromRGBO(18, 142, 249, 1),
+                                ))),
+                        child: Text(
+                          'Crear Publicación',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20,
+                            color: Color.fromRGBO(18, 142, 249, 1),
+                          ),
+                        ),
+                      ))
                     ]),
                 Padding(
                     padding: EdgeInsets.only(left: 20.0, right: 20.0),
@@ -60,6 +100,19 @@ class _MiInputPostState extends State<MiInputPost> {
                         decoration: InputDecoration(
                             hintText: "Ingrese la descripción...",
                             labelText: "Descripción"))),
+                GestureDetector(
+                    onTap: () => _selectDate(context),
+                    child: AbsorbPointer(
+                      child: Padding(
+                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                          child: TextField(
+                              controller: _controllerFecha,
+                              maxLength: 20,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                  hintText: "Ingrese la descripción...",
+                                  labelText: "Fecha"))),
+                    )),
                 Padding(
                     padding: EdgeInsets.only(left: 20.0, right: 20.0),
                     child: Wrap(
@@ -146,7 +199,21 @@ class _MiInputPostState extends State<MiInputPost> {
                               _navigateAndReturnMap(context);
                             },
                           ))
-                      : Container()
+                      : Container(),
+                  Expanded(
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 10.0),
+                            child: FlatButton(
+                              color: Color.fromRGBO(19, 137, 253, 1),
+                              child: Text(
+                                "PUBLICAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ))),
                 ]),
               )
             ],
