@@ -1,4 +1,4 @@
-import 'package:sandbox_flutter/Firebase/Queries.dart';
+import 'package:sandbox_flutter/Firebase/QueriesPersona.dart';
 
 class Persona {
   String idPersona;

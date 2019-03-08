@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 
 class NotificationSender {
 
+  final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+
   static Future<http.Response> fetchNotification(String title, String body) {
     Map<String, String> userHeader = {'Authorization':
           'key=AAAArSM6NeE:APA91bFjlUNKt7peO2SXXKjF1rB4g-clSTS-dK2g2zdUZk61a8eyQd2xhHthABYWNnWeAv4ajjG94KI_NPixwQXIJQ6Gdd0cmYAla4MpD7sazXleVW-4kLpK98yN69kMko13RXG9vJ5M',

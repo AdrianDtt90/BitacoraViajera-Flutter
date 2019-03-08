@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -33,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   final GoogleSignIn _gSignIn = new GoogleSignIn();
+  final FirebaseAuth _fAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -107,13 +109,18 @@ class _MyHomePageState extends State<MyHomePage> {
               title: Text('Cerrar Sesión'),
               onTap: () {
                 store.dispatch(new LogOutAction());
-                _gSignIn.signOut();
+                _signOut();
               },
             )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _signOut() async {
+    _gSignIn.signOut();
+    return _fAuth.signOut();
   }
 
   void _onItemTapped(int index) {

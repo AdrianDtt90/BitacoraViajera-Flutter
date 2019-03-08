@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyNotifications.dart';
@@ -56,7 +57,10 @@ class _MainState extends State<Main> {
 
   Widget login() {
     void _onLoggedInOk(loggedUser) {
-      store.dispatch(new LogInAction(loggedUser));
+      //Agregamos usuario en Firebase
+      Users.create(loggedUser).then((user) {
+        store.dispatch(new LogInAction(loggedUser));
+      });
     }
 
     return new MyLoginGoogleFirebase(_onLoggedInOk);
