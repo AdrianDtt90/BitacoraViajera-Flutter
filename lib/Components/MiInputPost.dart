@@ -18,10 +18,15 @@ class MiInputPost extends StatefulWidget {
 }
 
 class _MiInputPostState extends State<MiInputPost> {
+  TextEditingController _controllerTitulo = new TextEditingController();
+  TextEditingController _controllerDescripcion = new TextEditingController();
   TextEditingController _controllerFecha = new TextEditingController();
 
   List<Map<String, dynamic>> _listaAdjuntos = new List();
-  Map<String, dynamic> mapa = null;
+  Map<String, dynamic> _mapa = null;
+
+  bool _errorPublicacion = false;
+  String _errorMensaje = 'Error al intentar publicar';
 
   @override
   void initState() {
@@ -88,6 +93,7 @@ class _MiInputPostState extends State<MiInputPost> {
                 Padding(
                     padding: EdgeInsets.only(left: 20.0, right: 20.0),
                     child: TextField(
+                        controller: _controllerTitulo,
                         maxLength: 25,
                         decoration: InputDecoration(
                             hintText: "Ingrese el título...",
@@ -95,6 +101,7 @@ class _MiInputPostState extends State<MiInputPost> {
                 Padding(
                     padding: EdgeInsets.only(left: 20.0, right: 20.0),
                     child: TextField(
+                        controller: _controllerDescripcion,
                         maxLength: 500,
                         maxLines: null,
                         decoration: InputDecoration(
@@ -129,7 +136,7 @@ class _MiInputPostState extends State<MiInputPost> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              mapa != null
+              _mapa != null
                   ? Container(
                       width: double.infinity,
                       height: 50.0,
@@ -149,7 +156,7 @@ class _MiInputPostState extends State<MiInputPost> {
                         Flexible(
                             child: Padding(
                                 padding: EdgeInsets.only(right: 10.0),
-                                child: Text(mapa['text'],
+                                child: Text(_mapa['text'],
                                     overflow: TextOverflow.ellipsis))),
                         IconButton(
                           //Map
@@ -157,7 +164,7 @@ class _MiInputPostState extends State<MiInputPost> {
                           color: Colors.grey,
                           onPressed: () {
                             setState(() {
-                              mapa = null;
+                              _mapa = null;
                             });
                           },
                         )
@@ -188,7 +195,7 @@ class _MiInputPostState extends State<MiInputPost> {
                       _getImageFromGallery();
                     },
                   ),
-                  mapa == null
+                  _mapa == null
                       ? Padding(
                           padding: EdgeInsets.only(bottom: 2.0),
                           child: IconButton(
@@ -211,18 +218,92 @@ class _MiInputPostState extends State<MiInputPost> {
                                 "PUBLICAR",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _publicarPost();
+                              },
                             ),
                           ))),
                 ]),
               )
             ],
-          )
+          ),
+          _errorPublicacion == true ? _neverSatisfied() : Container()
         ],
       ),
       decoration: BoxDecoration(
         color: const Color.fromRGBO(248, 248, 248, 1),
       ),
+    );
+  }
+
+  void _publicarPost() {
+    var post = {
+      "titulo": _controllerTitulo.text,
+      "descripcion": _controllerDescripcion.text,
+      "fecha": _controllerFecha.text,
+      "resultMap": _mapa,
+      "adjuntos": _listaAdjuntos,
+    };
+
+    bool result = validarPost(post);
+
+    if (result == true) {}
+  }
+
+  bool validarPost(dynamic post) {
+    //Validamos Titulo
+    if (post['titulo'] == '') {
+      setState(() {
+        _errorPublicacion = true;
+        _errorMensaje = 'Debe ingresar un titulo.';
+      });
+      return false;
+    }
+
+    //Validamos Descripción
+    if (post['descripcion'] == '') {
+      setState(() {
+        _errorPublicacion = true;
+        _errorMensaje = 'Debe ingresar una descripción.';
+      });
+      return false;
+    }
+
+    //Validamos Fecha
+    var fechaSplit = post['fecha'].split("/");
+    final selectedDate = DateTime(int.parse(fechaSplit[2]), int.parse(fechaSplit[1]), int.parse(fechaSplit[0]));
+    final nowDate = DateTime.now();
+    final difference = nowDate.difference(selectedDate).inMilliseconds;
+
+    if (difference < 0) {
+      setState(() {
+        _errorPublicacion = true;
+        _errorMensaje = 'Debe ingresar una fecha igual o menor a la actual.';
+      });
+      return false;
+    }
+
+    setState(() {
+      _errorPublicacion = false;
+    });
+
+    return true;
+  }
+
+  Widget _neverSatisfied() {
+    return SimpleDialog(
+      children: <Widget>[
+        SimpleDialogOption(
+          child: Text("${_errorMensaje}"),
+        ),
+        SimpleDialogOption(
+            onPressed: () {
+              setState(() {
+                _errorPublicacion = false;
+              });
+            },
+            child: Text("CERRAR", style: TextStyle(fontWeight: FontWeight.bold),)),
+      ],
     );
   }
 
@@ -291,11 +372,13 @@ class _MiInputPostState extends State<MiInputPost> {
 
     if (result == null) {
       //Se rechazó foto
-      //No hacer nada
+      setState(() {
+        _mapa = {"text": null, "lat": null, "lon": null};
+      });
     } else {
       //Se encontró Mapa
       setState(() {
-        mapa = {
+        _mapa = {
           "text": result['text'],
           "lat": result['lat'],
           "lon": result['lon']
