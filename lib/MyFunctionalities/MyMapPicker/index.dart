@@ -207,10 +207,6 @@ class _SearchAddressState extends State<SearchAddress> {
         }
         _amountText = 0;
       });
-
-      setState(() {
-        _isButtonDisabled = true;
-      });
     });
   }
 
@@ -231,12 +227,28 @@ class _SearchAddressState extends State<SearchAddress> {
               child: Padding(
                   padding: EdgeInsets.only(left: 20.0, right: 20.0),
                   child: TextField(
-                      autofocus: true,
-                      controller: _controller,
-                      maxLength: 25,
-                      decoration: InputDecoration(
-                          hintText: "Ingrese la dirección...",
-                          labelText: "Dirección")))),
+                    autofocus: true,
+                    controller: _controller,
+                    maxLength: 25,
+                    decoration: _isButtonDisabled == false
+                        ? InputDecoration(
+                            hintText: "Ingrese la dirección...",
+                            labelText: "Dirección",
+                            suffixIcon: IconButton(
+                              //Map
+                              icon: Icon(Icons.cancel),
+                              color: Colors.grey,
+                              onPressed: () {
+                                _controller.text = '';
+                                setState(() {
+                                  _isButtonDisabled = true;
+                                });
+                              },
+                            ))
+                        : InputDecoration(
+                            hintText: "Ingrese la dirección...",
+                            labelText: "Dirección"),
+                  ))),
           _listSugerencias != null
               ? Column(children: _listSugerencias)
               : Container(),
@@ -273,19 +285,21 @@ class _SearchAddressState extends State<SearchAddress> {
 
     List<ListTile> listSugerencias = new List();
 
-    result['suggestions'].forEach((suggestion) {
-      listSugerencias.add(ListTile(
-        leading: Icon(Icons.place),
-        title: Text(suggestion['label']),
-        onTap: () {
-          _controller.text = suggestion['label'];
-          setState(() {
-            _listSugerencias = [];
-            _isButtonDisabled = false;
-          });
-        },
-      ));
-    });
+    if (result != null && result.length > 0) {
+      result['suggestions'].forEach((suggestion) {
+        listSugerencias.add(ListTile(
+          leading: Icon(Icons.place),
+          title: Text(suggestion['label']),
+          onTap: () {
+            _controller.text = suggestion['label'];
+            setState(() {
+              _listSugerencias = [];
+              _isButtonDisabled = false;
+            });
+          },
+        ));
+      });
+    }
 
     setState(() {
       _listSugerencias = listSugerencias;

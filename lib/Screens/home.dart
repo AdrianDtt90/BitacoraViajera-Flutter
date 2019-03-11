@@ -218,6 +218,12 @@ class _FirstScreenState extends State<FirstScreen> {
         icon: Icon(Icons.blur_circular, color: Colors.white)),
   ];
 
+  void closeMiInputPost() {
+    setState(() {
+      _openMiInputPost = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -237,7 +243,7 @@ class _FirstScreenState extends State<FirstScreen> {
               child: Icon(Icons.add),
               elevation: 0.0,
             )),
-        _openMiInputPost ? MiInputPost() : Container()
+        _openMiInputPost ? MiInputPost(closeMiInputPost: closeMiInputPost) : Container()
       ],
     );
   }

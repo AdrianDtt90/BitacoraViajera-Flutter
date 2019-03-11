@@ -11,7 +11,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class MiInputPost extends StatefulWidget {
-  MiInputPost({Key key}) : super(key: key);
+  Function closeMiInputPost;
+
+  MiInputPost({Key key, this.closeMiInputPost}) : super(key: key);
 
   @override
   _MiInputPostState createState() => _MiInputPostState();
@@ -247,7 +249,10 @@ class _MiInputPostState extends State<MiInputPost> {
 
     bool result = validarPost(post);
 
-    if (result == true) {}
+    if (result == true) {
+      //ACA GUARDAR TODO
+      widget.closeMiInputPost();
+    }
   }
 
   bool validarPost(dynamic post) {
