@@ -10,7 +10,7 @@ Future<dynamic> getImage() async {
 }
 
 Future<List<String>> subirMuchas(
-    List<String> paths, Function onProgress) async {
+  List<String> paths, Function onProgress) async {
   List<String> resultado = [];
 
   int i = 0;

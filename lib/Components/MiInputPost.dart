@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,9 +7,13 @@ import 'package:sandbox_flutter/Components/MiImage.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/index.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MiUpdateImage/index.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+
+import 'package:sandbox_flutter/Entities/Posts.dart';
+import 'package:sandbox_flutter/Redux/index.dart';
 
 class MiInputPost extends StatefulWidget {
   Function closeMiInputPost;
@@ -26,6 +31,10 @@ class _MiInputPostState extends State<MiInputPost> {
 
   List<Map<String, dynamic>> _listaAdjuntos = new List();
   Map<String, dynamic> _mapa = null;
+
+  dynamic _mensajeUploadPost = 'Cargando...';
+
+  bool _uploadPost = false;
 
   bool _errorPublicacion = false;
   String _errorMensaje = 'Error al intentar publicar';
@@ -229,7 +238,29 @@ class _MiInputPostState extends State<MiInputPost> {
               )
             ],
           ),
-          _errorPublicacion == true ? _neverSatisfied() : Container()
+          _errorPublicacion == true ? _neverSatisfied() : Container(),
+          _uploadPost == true
+              ? Container(
+                  child: SimpleDialog(
+                    title: Center(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                          SizedBox(
+                            child: CircularProgressIndicator(),
+                            height: 50.0,
+                            width: 50.0,
+                          )
+                        ])),
+                    children: <Widget>[
+                      Text('${_mensajeUploadPost}', textAlign: TextAlign.center)
+                    ],
+                  ),
+                  decoration: new BoxDecoration(
+                    color: const Color.fromRGBO(88, 183, 251, 0.8),
+                  ),
+                )
+              : Container()
         ],
       ),
       decoration: BoxDecoration(
@@ -239,20 +270,79 @@ class _MiInputPostState extends State<MiInputPost> {
   }
 
   void _publicarPost() {
-    var post = {
+    Random rnd = new Random();
+    List<String> listaAdjuntos = new List();
+
+    var postData = {
+      "idPost": "idPost_${rnd.nextInt(100000000)}",
       "titulo": _controllerTitulo.text,
       "descripcion": _controllerDescripcion.text,
       "fecha": _controllerFecha.text,
-      "resultMap": _mapa,
-      "adjuntos": _listaAdjuntos,
+      "uidUser": store.state['loggedUser']['uid'],
+      "nombreMapa": _mapa != null ? _mapa['text'] : null,
+      "latitud": _mapa != null ? _mapa['lat'] : null,
+      "longitud": _mapa != null ? _mapa['lon'] : null,
+      "adjuntosInt": _listaAdjuntos,
+      "adjuntos": listaAdjuntos
     };
 
-    bool result = validarPost(post);
+    bool result = validarPost(postData);
 
     if (result == true) {
-      //ACA GUARDAR TODO
-      widget.closeMiInputPost();
+      //Vemos si hay adjuntos 
+      if (_listaAdjuntos.length > 0) {
+        //Subimos Imagenes para obtener URLs
+        List<String> listaLinkImg = new List();
+        _listaAdjuntos.forEach((element) {
+          //Camara
+          if (element['tipo'] == 'image') {
+            listaLinkImg.add(element['src']);
+          }
+        });
+        subirMuchas(listaLinkImg, (idImagen, progressImage) {
+          setState(() {
+            _mensajeUploadPost =
+                'Subiendo Imagen N° ${idImagen + 1} - ${progressImage}%';
+            _uploadPost = true;
+          });
+        }).then((urlsImages) {
+          postData['adjuntos'] = urlsImages; //List<String>
+
+          updatePost(postData);
+        }).catchError((e) {
+          setState(() {
+            _errorPublicacion = true;
+            _errorMensaje = 'Ocurrió un problema al intentar subir las fotos.';
+            _uploadPost = false;
+          });
+        });
+      } else {
+        updatePost(postData);
+      }
     }
+  }
+
+  void updatePost(dynamic postData) {
+    setState(() {
+      _mensajeUploadPost = 'Posteando...';
+      _uploadPost = true;
+    });
+
+    //Publicamos
+    Posts.create(postData).then((post) {
+      setState(() {
+        _uploadPost = false;
+      });
+
+      //Cerramos el cargando
+      widget.closeMiInputPost();
+    }).catchError((e) {
+      setState(() {
+        _errorPublicacion = true;
+        _errorMensaje = 'Ocurrió un problema al intentar publicar.';
+        _uploadPost = false;
+      });
+    });
   }
 
   bool validarPost(dynamic post) {
@@ -276,7 +366,8 @@ class _MiInputPostState extends State<MiInputPost> {
 
     //Validamos Fecha
     var fechaSplit = post['fecha'].split("/");
-    final selectedDate = DateTime(int.parse(fechaSplit[2]), int.parse(fechaSplit[1]), int.parse(fechaSplit[0]));
+    final selectedDate = DateTime(int.parse(fechaSplit[2]),
+        int.parse(fechaSplit[1]), int.parse(fechaSplit[0]));
     final nowDate = DateTime.now();
     final difference = nowDate.difference(selectedDate).inMilliseconds;
 
@@ -307,14 +398,17 @@ class _MiInputPostState extends State<MiInputPost> {
                 _errorPublicacion = false;
               });
             },
-            child: Text("CERRAR", style: TextStyle(fontWeight: FontWeight.bold),)),
+            child: Text(
+              "CERRAR",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
       ],
     );
   }
 
   //Listar Adjuntos
   List<Widget> getListaAdjuntos() {
-    if (_listaAdjuntos != null) {
+    if (_listaAdjuntos.length > 0) {
       List<Widget> listaAdjuntos = new List();
 
       _listaAdjuntos.forEach((element) {
