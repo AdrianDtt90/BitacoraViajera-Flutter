@@ -199,7 +199,14 @@ class _FirstScreenState extends State<FirstScreen> {
           List<Widget> listaImagenes = new List();
           int count = 1;
           listAdjuntos.forEach((imagen) {
-            if (count > 4) return true;
+            if (count > 4) {
+              listaImagenes.add(MiImage(
+                  linkTexto: '+ ver más',
+                  currentUrl: imagen['src'],
+                  fileType: 0,
+                  listImages: listAdjuntos));
+              return true;
+            }
 
             listaImagenes.add(Container(
               width: 150,

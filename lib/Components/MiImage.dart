@@ -7,12 +7,13 @@ import 'package:photo_view/photo_view_gallery.dart';
 
 class MiImage extends StatefulWidget {
   final String currentUrl;
+  final String linkTexto;
   final int fileType;
   //fileType; // 0: External, 1:Internal, 2:Assets
 
   List<Map<String, dynamic>> listImages;
 
-  MiImage({Key key, this.currentUrl, this.fileType: 0, this.listImages})
+  MiImage({Key key, this.currentUrl, this.linkTexto, this.fileType: 0, this.listImages})
       : super(key: key);
 
   @override
@@ -33,7 +34,7 @@ class _MiImageState extends State<MiImage> {
                     listImages: widget.listImages)),
           );
         },
-        child: getImageWidget(widget.currentUrl, widget.fileType));
+        child: widget.linkTexto != null ? Text("${widget.linkTexto}", style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromRGBO(18, 142, 249, 1))) : getImageWidget(widget.currentUrl, widget.fileType));
   }
 
   Widget getImageWidget(String url, int fileType) {
