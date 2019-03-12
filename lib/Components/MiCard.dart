@@ -25,7 +25,14 @@ class _MiCardState extends State<MiCard> {
         margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
         child: Column(
           children: <Widget>[
-            Center(child: Text(widget.date)),
+            Container(
+              width: double.infinity,
+              child: Text(
+                widget.date,
+                textAlign: TextAlign.right,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
             SizedBox(
                 width: double.infinity,
                 height: widget.height,
@@ -62,8 +69,8 @@ class _MiCardState extends State<MiCard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        PostComments(post: 'Post ${widget.key}')),
+                                    builder: (context) => PostComments(
+                                        post: 'Post ${widget.key}')),
                               );
                             });
                           },
@@ -85,14 +92,12 @@ class PostComments extends StatefulWidget {
 }
 
 class _PostCommentsState extends State<PostComments> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('${widget.post}'),
         ),
-        body: MiComments()
-    );
+        body: MiComments());
   }
 }

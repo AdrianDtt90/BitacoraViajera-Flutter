@@ -70,7 +70,7 @@ class ImageViewer extends StatelessWidget {
       src = getImagesViewer(listImages);
     }
 
-    return Container(color: Colors.red, child: src);
+    return Container(color: Colors.black, child: src);
   }
 
   dynamic getImageWidget(String url, int fileType) {
