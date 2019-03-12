@@ -28,6 +28,7 @@ class _MiInputPostState extends State<MiInputPost> {
   TextEditingController _controllerTitulo = new TextEditingController();
   TextEditingController _controllerDescripcion = new TextEditingController();
   TextEditingController _controllerFecha = new TextEditingController();
+  TextEditingController _controllerHora = new TextEditingController();
 
   List<Map<String, dynamic>> _listaAdjuntos = new List();
   Map<String, dynamic> _mapa = null;
@@ -46,6 +47,9 @@ class _MiInputPostState extends State<MiInputPost> {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('dd/MM/yyyy').format(now);
     _controllerFecha.text = formattedDate;
+
+    TimeOfDay hora = TimeOfDay.now();
+    _controllerHora.text = hora.hour.toString() + ":" + hora.minute.toString();
   }
 
   void _selectDate(BuildContext context) async {
@@ -58,6 +62,17 @@ class _MiInputPostState extends State<MiInputPost> {
     if (picked != null) {
       String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
       _controllerFecha.text = formattedDate;
+    }
+  }
+
+  void _selectHour(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now()
+    );
+    if (picked != null) {
+      _controllerHora.text = picked.format(context);
+
     }
   }
 
@@ -128,8 +143,21 @@ class _MiInputPostState extends State<MiInputPost> {
                               maxLength: 20,
                               maxLines: null,
                               decoration: InputDecoration(
-                                  hintText: "Ingrese la descripción...",
+                                  hintText: "Ingrese la fecha...",
                                   labelText: "Fecha"))),
+                    )),
+                GestureDetector(
+                    onTap: () => _selectHour(context),
+                    child: AbsorbPointer(
+                      child: Padding(
+                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                          child: TextField(
+                              controller: _controllerHora,
+                              maxLength: 20,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                  hintText: "Ingrese la hora...",
+                                  labelText: "Hora"))),
                     )),
                 Padding(
                     padding: EdgeInsets.only(left: 20.0, right: 20.0),
@@ -277,7 +305,7 @@ class _MiInputPostState extends State<MiInputPost> {
       "idPost": "idPost_${rnd.nextInt(100000000)}",
       "titulo": _controllerTitulo.text,
       "descripcion": _controllerDescripcion.text,
-      "fecha": _controllerFecha.text,
+      "fecha": "${_controllerFecha.text} ${_controllerHora.text}",
       "uidUser": store.state['loggedUser']['uid'],
       "nombreMapa": _mapa != null ? _mapa['text'] : null,
       "latitud": _mapa != null ? _mapa['lat'] : null,
@@ -365,7 +393,7 @@ class _MiInputPostState extends State<MiInputPost> {
     }
 
     //Validamos Fecha
-    var fechaSplit = post['fecha'].split("/");
+    var fechaSplit = post['fecha'].split(" ")[0].split("/");
     final selectedDate = DateTime(int.parse(fechaSplit[2]),
         int.parse(fechaSplit[1]), int.parse(fechaSplit[0]));
     final nowDate = DateTime.now();

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:sandbox_flutter/Firebase/QueriesPosts.dart';
 import 'package:sandbox_flutter/Entities/Images.dart';
+import 'package:sandbox_flutter/Entities/Maps.dart';
 
 class Posts {
   String titulo;
@@ -38,6 +39,7 @@ class Posts {
         user['longitud'],
         user['adjuntos']);
 
+    //Guardamos adjuntos
     if (user['adjuntos'] != null && user['adjuntos'].length > 0) {
       user['adjuntos'].forEach((urlImg) async {
         Random rnd = new Random();
@@ -52,10 +54,28 @@ class Posts {
       });
     }
 
+    //Guardamos mapas
+    if (user['nombreMapa'] != null &&
+        user['latitud'] != null &&
+        user['longitud'] != null) {
+      Random rnd = new Random();
+      () async {
+        try {
+          await Maps.create({
+            "idMap": "idMap_${rnd.nextInt(100000000)}",
+            "uidUser": user['uidUser'],
+            "text": user['nombreMapa'],
+            "lat": user['latitud'],
+            "lon": user['longitud']
+          });
+        } catch (e) {}
+      }();
+    }
+
     return insertPosts(nuevoPosts);
   }
 
-  static Future<dynamic> allPostss() {
+  static Future<dynamic> allPosts() {
     return getPosts();
   }
 
