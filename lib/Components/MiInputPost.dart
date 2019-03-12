@@ -16,9 +16,7 @@ import 'package:sandbox_flutter/Entities/Posts.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
 
 class MiInputPost extends StatefulWidget {
-  Function closeMiInputPost;
-
-  MiInputPost({Key key, this.closeMiInputPost}) : super(key: key);
+  MiInputPost({Key key}) : super(key: key);
 
   @override
   _MiInputPostState createState() => _MiInputPostState();
@@ -66,235 +64,238 @@ class _MiInputPostState extends State<MiInputPost> {
   }
 
   void _selectHour(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now()
-    );
+    final TimeOfDay picked =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null) {
       _controllerHora.text = picked.format(context);
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(bottom: 50.0),
-            child: ListView(
-              // Important: Remove any padding from the ListView.
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                          child: Container(
-                        margin: EdgeInsets.only(top: 10),
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border: Border(
-                                top: BorderSide(
-                                  color: Color.fromRGBO(18, 142, 249, 1),
-                                ),
-                                bottom: BorderSide(
-                                  color: Color.fromRGBO(18, 142, 249, 1),
-                                ))),
-                        child: Text(
-                          'Crear Publicación',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 20,
-                            color: Color.fromRGBO(18, 142, 249, 1),
-                          ),
-                        ),
-                      ))
-                    ]),
-                Padding(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: TextField(
-                        controller: _controllerTitulo,
-                        maxLength: 25,
-                        decoration: InputDecoration(
-                            hintText: "Ingrese el título...",
-                            labelText: "Título"))),
-                Padding(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: TextField(
-                        controller: _controllerDescripcion,
-                        maxLength: 500,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                            hintText: "Ingrese la descripción...",
-                            labelText: "Descripción"))),
-                GestureDetector(
-                    onTap: () => _selectDate(context),
-                    child: AbsorbPointer(
-                      child: Padding(
-                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: TextField(
-                              controller: _controllerFecha,
-                              maxLength: 20,
-                              maxLines: null,
-                              decoration: InputDecoration(
-                                  hintText: "Ingrese la fecha...",
-                                  labelText: "Fecha"))),
-                    )),
-                GestureDetector(
-                    onTap: () => _selectHour(context),
-                    child: AbsorbPointer(
-                      child: Padding(
-                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: TextField(
-                              controller: _controllerHora,
-                              maxLength: 20,
-                              maxLines: null,
-                              decoration: InputDecoration(
-                                  hintText: "Ingrese la hora...",
-                                  labelText: "Hora"))),
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: Wrap(
-                      spacing: 8.0, // gap between adjacent chips
-                      runSpacing: 4.0, // gap between lines
-                      direction: Axis.horizontal, // main axis (rows or columns)
-                      children: getListaAdjuntos(),
-                    ))
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Nueva Publicación'),
+        ),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Stack(
             children: <Widget>[
-              _mapa != null
-                  ? Container(
-                      width: double.infinity,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(248, 248, 248, 1)),
-                      child: Row(children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(bottom: 2.0),
-                            child: IconButton(
-                              //Map
-                              icon: Icon(Icons.place),
-                              color: Color.fromRGBO(232, 3, 3, 1),
-                              onPressed: () {
-                                _navigateAndReturnMap(context);
-                              },
-                            )),
-                        Flexible(
-                            child: Padding(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: Text(_mapa['text'],
-                                    overflow: TextOverflow.ellipsis))),
-                        IconButton(
-                          //Map
-                          icon: Icon(Icons.cancel),
-                          color: Colors.grey,
-                          onPressed: () {
-                            setState(() {
-                              _mapa = null;
-                            });
-                          },
-                        )
-                      ]),
-                    )
-                  : Container(),
-              Container(
-                width: double.infinity,
-                height: 50.0,
-                decoration: BoxDecoration(color: Colors.white),
-                child: Row(children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: Text("Agregar: ")),
-                  IconButton(
-                    //Camera
-                    icon: Icon(Icons.camera_alt),
-                    color: Color.fromRGBO(63, 187, 12, 1),
-                    onPressed: () {
-                      _navigateAndReturnImage(context);
-                    },
-                  ),
-                  IconButton(
-                    //Camera
-                    icon: Icon(Icons.image),
-                    color: Color.fromRGBO(66, 103, 178, 1),
-                    onPressed: () {
-                      _getImageFromGallery();
-                    },
-                  ),
-                  _mapa == null
-                      ? Padding(
-                          padding: EdgeInsets.only(bottom: 2.0),
-                          child: IconButton(
-                            //Map
-                            icon: Icon(Icons.place),
-                            color: Color.fromRGBO(232, 3, 3, 1),
-                            onPressed: () {
-                              _navigateAndReturnMap(context);
-                            },
-                          ))
-                      : Container(),
-                  Expanded(
-                      child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 10.0),
-                            child: FlatButton(
-                              color: Color.fromRGBO(19, 137, 253, 1),
-                              child: Text(
-                                "PUBLICAR",
-                                style: TextStyle(color: Colors.white),
+              Padding(
+                padding: EdgeInsets.only(bottom: 50.0),
+                child: ListView(
+                  // Important: Remove any padding from the ListView.
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                              child: Container(
+                            margin: EdgeInsets.only(top: 10),
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(
+                                      color: Color.fromRGBO(18, 142, 249, 1),
+                                    ),
+                                    bottom: BorderSide(
+                                      color: Color.fromRGBO(18, 142, 249, 1),
+                                    ))),
+                            child: Text(
+                              'Crear Publicación',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 20,
+                                color: Color.fromRGBO(18, 142, 249, 1),
                               ),
-                              onPressed: () {
-                                _publicarPost();
-                              },
                             ),
-                          ))),
-                ]),
-              )
+                          ))
+                        ]),
+                    Padding(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: TextField(
+                            controller: _controllerTitulo,
+                            maxLength: 25,
+                            decoration: InputDecoration(
+                                hintText: "Ingrese el título...",
+                                labelText: "Título"))),
+                    Padding(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: TextField(
+                            controller: _controllerDescripcion,
+                            maxLength: 500,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                                hintText: "Ingrese la descripción...",
+                                labelText: "Descripción"))),
+                    GestureDetector(
+                        onTap: () => _selectDate(context),
+                        child: AbsorbPointer(
+                          child: Padding(
+                              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                              child: TextField(
+                                  controller: _controllerFecha,
+                                  maxLength: 20,
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                      hintText: "Ingrese la fecha...",
+                                      labelText: "Fecha"))),
+                        )),
+                    GestureDetector(
+                        onTap: () => _selectHour(context),
+                        child: AbsorbPointer(
+                          child: Padding(
+                              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                              child: TextField(
+                                  controller: _controllerHora,
+                                  maxLength: 20,
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                      hintText: "Ingrese la hora...",
+                                      labelText: "Hora"))),
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Wrap(
+                          spacing: 8.0, // gap between adjacent chips
+                          runSpacing: 4.0, // gap between lines
+                          direction:
+                              Axis.horizontal, // main axis (rows or columns)
+                          children: getListaAdjuntos(),
+                        ))
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  _mapa != null
+                      ? Container(
+                          width: double.infinity,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(248, 248, 248, 1)),
+                          child: Row(children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.only(bottom: 2.0),
+                                child: IconButton(
+                                  //Map
+                                  icon: Icon(Icons.place),
+                                  color: Color.fromRGBO(232, 3, 3, 1),
+                                  onPressed: () {
+                                    _navigateAndReturnMap(context);
+                                  },
+                                )),
+                            Flexible(
+                                child: Padding(
+                                    padding: EdgeInsets.only(right: 10.0),
+                                    child: Text(_mapa['text'],
+                                        overflow: TextOverflow.ellipsis))),
+                            IconButton(
+                              //Map
+                              icon: Icon(Icons.cancel),
+                              color: Colors.grey,
+                              onPressed: () {
+                                setState(() {
+                                  _mapa = null;
+                                });
+                              },
+                            )
+                          ]),
+                        )
+                      : Container(),
+                  Container(
+                    width: double.infinity,
+                    height: 50.0,
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: Row(children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Text("Agregar: ")),
+                      IconButton(
+                        //Camera
+                        icon: Icon(Icons.camera_alt),
+                        color: Color.fromRGBO(63, 187, 12, 1),
+                        onPressed: () {
+                          _navigateAndReturnImage(context);
+                        },
+                      ),
+                      IconButton(
+                        //Camera
+                        icon: Icon(Icons.image),
+                        color: Color.fromRGBO(66, 103, 178, 1),
+                        onPressed: () {
+                          _getImageFromGallery();
+                        },
+                      ),
+                      _mapa == null
+                          ? Padding(
+                              padding: EdgeInsets.only(bottom: 2.0),
+                              child: IconButton(
+                                //Map
+                                icon: Icon(Icons.place),
+                                color: Color.fromRGBO(232, 3, 3, 1),
+                                onPressed: () {
+                                  _navigateAndReturnMap(context);
+                                },
+                              ))
+                          : Container(),
+                      Expanded(
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: FlatButton(
+                                  color: Color.fromRGBO(19, 137, 253, 1),
+                                  child: Text(
+                                    "PUBLICAR",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () {
+                                    _publicarPost();
+                                  },
+                                ),
+                              ))),
+                    ]),
+                  )
+                ],
+              ),
+              _errorPublicacion == true ? _neverSatisfied() : Container(),
+              _uploadPost == true
+                  ? Container(
+                      child: SimpleDialog(
+                        title: Center(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                              SizedBox(
+                                child: CircularProgressIndicator(),
+                                height: 50.0,
+                                width: 50.0,
+                              )
+                            ])),
+                        children: <Widget>[
+                          Text('${_mensajeUploadPost}',
+                              textAlign: TextAlign.center)
+                        ],
+                      ),
+                      decoration: new BoxDecoration(
+                        color: const Color.fromRGBO(88, 183, 251, 0.8),
+                      ),
+                    )
+                  : Container()
             ],
           ),
-          _errorPublicacion == true ? _neverSatisfied() : Container(),
-          _uploadPost == true
-              ? Container(
-                  child: SimpleDialog(
-                    title: Center(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                          SizedBox(
-                            child: CircularProgressIndicator(),
-                            height: 50.0,
-                            width: 50.0,
-                          )
-                        ])),
-                    children: <Widget>[
-                      Text('${_mensajeUploadPost}', textAlign: TextAlign.center)
-                    ],
-                  ),
-                  decoration: new BoxDecoration(
-                    color: const Color.fromRGBO(88, 183, 251, 0.8),
-                  ),
-                )
-              : Container()
-        ],
-      ),
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(248, 248, 248, 1),
-      ),
-    );
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(248, 248, 248, 1),
+          ),
+        ));
   }
 
   void _publicarPost() {
@@ -317,7 +318,7 @@ class _MiInputPostState extends State<MiInputPost> {
     bool result = validarPost(postData);
 
     if (result == true) {
-      //Vemos si hay adjuntos 
+      //Vemos si hay adjuntos
       if (_listaAdjuntos.length > 0) {
         //Subimos Imagenes para obtener URLs
         List<String> listaLinkImg = new List();
@@ -362,8 +363,7 @@ class _MiInputPostState extends State<MiInputPost> {
         _uploadPost = false;
       });
 
-      //Cerramos el cargando
-      widget.closeMiInputPost();
+      Navigator.pop(context, true);
     }).catchError((e) {
       setState(() {
         _errorPublicacion = true;

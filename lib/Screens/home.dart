@@ -163,7 +163,6 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  bool _openMiInputPost = false;
   List<TimelineModel> _listPost = new List();
 
   // static DateTime now = DateTime.now();
@@ -173,6 +172,74 @@ class _FirstScreenState extends State<FirstScreen> {
   initState() {
     super.initState();
 
+    _actualizarPublicaciones();
+  }
+
+  // List<TimelineModel> items = [
+  //   TimelineModel(
+  //       MiPhotoSwiper(
+  //           key: Key("1"),
+  //           date: formattedDate,
+  //           width: 200.0,
+  //           height: 300.0,
+  //           content: Text('LISTEN')),
+  //       position: TimelineItemPosition.random,
+  //       iconBackground: Colors.blue,
+  //       icon: Icon(Icons.blur_circular, color: Colors.white)),
+  //   TimelineModel(
+  //       MiCard(
+  //           key: Key("2"),
+  //           date: formattedDate,
+  //           width: 300.0,
+  //           height: 200.0,
+  //           content: Text('LISTEN')),
+  //       position: TimelineItemPosition.random,
+  //       iconBackground: Colors.blue,
+  //       icon: Icon(Icons.blur_circular, color: Colors.white))
+  // ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+            appBar: null,
+            body: Container(
+              child: _listPost.length > 0
+                  ? Timeline(
+                      children: _listPost, position: TimelinePosition.Left)
+                  : Center(
+                      child: SizedBox(
+                        child: CircularProgressIndicator(),
+                        height: 50.0,
+                        width: 50.0,
+                      ),
+                    ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _navigateToCreatePost(context);
+              },
+              tooltip: 'Increment Counter',
+              child: Icon(Icons.add),
+              elevation: 0.0,
+            ))
+      ],
+    );
+  }
+
+  _navigateToCreatePost(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MiInputPost()),
+    );
+
+    if(result == true) {
+      _actualizarPublicaciones();
+    }
+  }
+
+  _actualizarPublicaciones() {
     Posts.allPosts().then((result) {
       List<TimelineModel> listPost = new List();
       List<DocumentSnapshot> lista = result.documents;
@@ -276,70 +343,6 @@ class _FirstScreenState extends State<FirstScreen> {
         _listPost = listPost;
       });
     });
-  }
-
-  // List<TimelineModel> items = [
-  //   TimelineModel(
-  //       MiPhotoSwiper(
-  //           key: Key("1"),
-  //           date: formattedDate,
-  //           width: 200.0,
-  //           height: 300.0,
-  //           content: Text('LISTEN')),
-  //       position: TimelineItemPosition.random,
-  //       iconBackground: Colors.blue,
-  //       icon: Icon(Icons.blur_circular, color: Colors.white)),
-  //   TimelineModel(
-  //       MiCard(
-  //           key: Key("2"),
-  //           date: formattedDate,
-  //           width: 300.0,
-  //           height: 200.0,
-  //           content: Text('LISTEN')),
-  //       position: TimelineItemPosition.random,
-  //       iconBackground: Colors.blue,
-  //       icon: Icon(Icons.blur_circular, color: Colors.white))
-  // ];
-
-  void closeMiInputPost() {
-    setState(() {
-      _openMiInputPost = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Scaffold(
-            appBar: null,
-            body: Container(
-              child: _listPost.length > 0
-                  ? Timeline(
-                      children: _listPost, position: TimelinePosition.Left)
-                  : Center(
-                      child: SizedBox(
-                        child: CircularProgressIndicator(),
-                        height: 50.0,
-                        width: 50.0,
-                      ),
-                    ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _openMiInputPost = !_openMiInputPost;
-                });
-              },
-              tooltip: 'Increment Counter',
-              child: Icon(Icons.add),
-              elevation: 0.0,
-            )),
-        _openMiInputPost
-            ? MiInputPost(closeMiInputPost: closeMiInputPost)
-            : Container()
-      ],
-    );
   }
 }
 

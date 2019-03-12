@@ -13,7 +13,12 @@ class MiImage extends StatefulWidget {
 
   List<Map<String, dynamic>> listImages;
 
-  MiImage({Key key, this.currentUrl, this.linkTexto, this.fileType: 0, this.listImages})
+  MiImage(
+      {Key key,
+      this.currentUrl,
+      this.linkTexto,
+      this.fileType: 0,
+      this.listImages})
       : super(key: key);
 
   @override
@@ -34,17 +39,55 @@ class _MiImageState extends State<MiImage> {
                     listImages: widget.listImages)),
           );
         },
-        child: widget.linkTexto != null ? Text("${widget.linkTexto}", style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromRGBO(18, 142, 249, 1))) : getImageWidget(widget.currentUrl, widget.fileType));
+        child: widget.linkTexto != null
+            ? Text("${widget.linkTexto}",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(18, 142, 249, 1)))
+            : getImageWidget(widget.currentUrl, widget.fileType));
   }
 
   Widget getImageWidget(String url, int fileType) {
     switch (fileType) {
       case 0:
-        return Image.network(url);
+        return Stack(
+          children: <Widget>[
+            Center(
+              child: SizedBox(
+                child: CircularProgressIndicator(),
+                height: 30.0,
+                width: 30.0,
+              ),
+            ),
+            Image.network(url)
+          ],
+        );
       case 1:
-        return Image.file(File(url));
+        return Stack(
+          children: <Widget>[
+            Center(
+              child: SizedBox(
+                child: CircularProgressIndicator(),
+                height: 30.0,
+                width: 30.0,
+              ),
+            ),
+            Image.file(File(url))
+          ],
+        );
       case 2:
-        return Image.asset(url);
+        return Stack(
+          children: <Widget>[
+            Center(
+              child: SizedBox(
+                child: CircularProgressIndicator(),
+                height: 30.0,
+                width: 30.0,
+              ),
+            ),
+            Image.asset(url)
+          ],
+        );
       default:
     }
   }
@@ -92,7 +135,7 @@ class ImageViewer extends StatelessWidget {
     int count = 1;
 
     list.forEach((image) {
-      if(image['src'] == null) return false;
+      if (image['src'] == null) return false;
 
       listSrc.add(PhotoViewGalleryPageOptions(
         imageProvider: getImageWidget(image['src'], image['fileType']),
