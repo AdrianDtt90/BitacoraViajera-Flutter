@@ -163,7 +163,7 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  List<TimelineModel> _listPost = new List();
+  List<Widget> _listPost = new List();
 
   // static DateTime now = DateTime.now();
   // static String formattedDate = DateFormat('kk:mm:ss  EEE d MMM').format(now);
@@ -200,32 +200,38 @@ class _FirstScreenState extends State<FirstScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Scaffold(
-            appBar: null,
-            body: Container(
-              child: _listPost.length > 0
-                  ? Timeline(
-                      children: _listPost, position: TimelinePosition.Left)
-                  : Center(
-                      child: SizedBox(
-                        child: CircularProgressIndicator(),
-                        height: 50.0,
-                        width: 50.0,
-                      ),
+    return Scaffold(
+        appBar: null,
+        body: Container(
+            child: _listPost.length > 0
+                ? Stack(children: <Widget>[
+                    Container(
+                      height: double.infinity,
+                      width: 1.0,
+                      color: Colors.black,
+                      margin: const EdgeInsets.only(left: 28.0, right: 28.0),
                     ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                _navigateToCreatePost(context);
-              },
-              tooltip: 'Increment Counter',
-              child: Icon(Icons.add),
-              elevation: 0.0,
-            ))
-      ],
-    );
+                    ListView(children: <Widget>[
+                      Column(
+                        children: _listPost,
+                      )
+                    ])
+                  ])
+                : Center(
+                    child: SizedBox(
+                      child: CircularProgressIndicator(),
+                      height: 50.0,
+                      width: 50.0,
+                    ),
+                  )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _navigateToCreatePost(context);
+          },
+          tooltip: 'Increment Counter',
+          child: Icon(Icons.add),
+          elevation: 0.0,
+        ));
   }
 
   _navigateToCreatePost(BuildContext context) async {
@@ -234,14 +240,14 @@ class _FirstScreenState extends State<FirstScreen> {
       MaterialPageRoute(builder: (context) => MiInputPost()),
     );
 
-    if(result == true) {
+    if (result == true) {
       _actualizarPublicaciones();
     }
   }
 
   _actualizarPublicaciones() {
     Posts.allPosts().then((result) {
-      List<TimelineModel> listPost = new List();
+      List<Widget> listPost = new List();
       List<DocumentSnapshot> lista = result.documents;
 
       lista.sort((a, b) => b.data['fecha'].compareTo(a.data['fecha']));
@@ -296,47 +302,65 @@ class _FirstScreenState extends State<FirstScreen> {
                       children: listaImagenes)));
         }
 
-        listPost.add(TimelineModel(
-            MiCard(
-                key: Key("${document.data['idPost']}"),
-                date: "${document.data['fecha']}",
-                width: 300.0,
-                content: Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Column(children: <Widget>[
-                      Text("${document.data['titulo']}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18.0)),
-                      Padding(
-                          padding: EdgeInsets.only(bottom: 10.0),
-                          child: Text("${document.data['descripcion']}")),
-                      adjuntosPost,
-                      document.data['nombreMapa'] != null
-                          ? Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(248, 248, 248, 1)),
-                              child: Row(children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.only(bottom: 2.0),
-                                    child: IconButton(
-                                      //Map
-                                      icon: Icon(Icons.place),
-                                      color: Color.fromRGBO(232, 3, 3, 1),
-                                      onPressed: () {},
-                                    )),
-                                Padding(
-                                    padding: EdgeInsets.only(right: 10.0),
-                                    child: Text(document.data['nombreMapa'],
-                                        overflow: TextOverflow.ellipsis))
-                              ]),
-                            )
-                          : Container()
-                    ]))),
-            position: TimelineItemPosition.random,
-            iconBackground: Colors.blue,
-            icon: Icon(Icons.blur_circular, color: Colors.white)));
+        listPost.add(Container(
+            child: Stack(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(left: 60.0),
+                child: MiCard(
+                    key: Key("${document.data['idPost']}"),
+                    date: "${document.data['fecha']}",
+                    width: 300.0,
+                    content: Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: Column(children: <Widget>[
+                          Text("${document.data['titulo']}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18.0)),
+                          Padding(
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text("${document.data['descripcion']}")),
+                          adjuntosPost,
+                          document.data['nombreMapa'] != null
+                              ? Container(
+                                  width: double.infinity,
+                                  height: 50.0,
+                                  decoration: BoxDecoration(
+                                      color: Color.fromRGBO(248, 248, 248, 1)),
+                                  child: Row(children: <Widget>[
+                                    Padding(
+                                        padding: EdgeInsets.only(bottom: 2.0),
+                                        child: IconButton(
+                                          //Map
+                                          icon: Icon(Icons.place),
+                                          color: Color.fromRGBO(232, 3, 3, 1),
+                                          onPressed: () {},
+                                        )),
+                                    Padding(
+                                        padding: EdgeInsets.only(right: 10.0),
+                                        child: Text(document.data['nombreMapa'],
+                                            overflow: TextOverflow.ellipsis))
+                                  ]),
+                                )
+                              : Container()
+                        ])))),
+            StoreConnector<Map<String, dynamic>, Map<String, dynamic>>(
+                converter: (store) => store.state['loggedUser'],
+                builder: (context, loggedUser) {
+                  return Padding(
+                      padding: EdgeInsets.only(top: 25.0),
+                      child: Container(
+                          width: 55,
+                          height: 55,
+                          decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: new NetworkImage(
+                                      "${loggedUser['photoUrl']}")))));
+                }),
+          ],
+        )));
       });
 
       setState(() {
