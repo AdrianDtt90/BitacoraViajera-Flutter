@@ -41,7 +41,7 @@ dynamic calcularDireccion(String address) async {
 
 //Buscar en google maps de chrome
 void launchMapsUrl(double lat, double lon) async {
-  final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lon';
+  final url = 'https://www.google.com/maps/@?api=1&map_action=map&center=$lat,$lon&zoom=12';
   if (await canLaunch(url)) {
     await launch(url);
   } else {

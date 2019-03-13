@@ -22,7 +22,7 @@ import 'item2.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 
 import 'package:sandbox_flutter/Components/MiCard.dart';
-import 'package:sandbox_flutter/Components/MiPhotoSwiper.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/MyGeolocation.dart';
 
 import 'package:sandbox_flutter/Components/MiInputPost.dart';
 
@@ -302,8 +302,10 @@ class _FirstScreenState extends State<FirstScreen> {
                       children: listaImagenes)));
         }
 
-        String _imageAvatar = document.data['user'] != null ? document.data['user'].photoUrl.toString() : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
-        
+        String _imageAvatar = document.data['user'] != null
+            ? document.data['user'].photoUrl.toString()
+            : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
+
         listPost.add(Container(
             child: Stack(
           children: <Widget>[
@@ -324,26 +326,30 @@ class _FirstScreenState extends State<FirstScreen> {
                               child: Text("${document.data['descripcion']}")),
                           adjuntosPost,
                           document.data['nombreMapa'] != null
-                              ? Container(
-                                  width: double.infinity,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(248, 248, 248, 1)),
-                                  child: Row(children: <Widget>[
-                                    Padding(
-                                        padding: EdgeInsets.only(bottom: 2.0),
-                                        child: IconButton(
-                                          //Map
-                                          icon: Icon(Icons.place),
-                                          color: Color.fromRGBO(232, 3, 3, 1),
-                                          onPressed: () {},
-                                        )),
-                                    Padding(
-                                        padding: EdgeInsets.only(right: 10.0),
-                                        child: Text(document.data['nombreMapa'],
-                                            overflow: TextOverflow.ellipsis))
-                                  ]),
-                                )
+                              ? GestureDetector(
+                                  onTap: () => launchMapsUrl(document.data['latitud'], document.data['longitud']),
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 50.0,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Color.fromRGBO(248, 248, 248, 1)),
+                                    child: Row(children: <Widget>[
+                                      Padding(
+                                          padding: EdgeInsets.only(bottom: 2.0),
+                                          child: IconButton(
+                                            //Map
+                                            icon: Icon(Icons.place),
+                                            color: Color.fromRGBO(232, 3, 3, 1),
+                                            onPressed: () {},
+                                          )),
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 10.0),
+                                          child: Text(
+                                              document.data['nombreMapa'],
+                                              overflow: TextOverflow.ellipsis))
+                                    ]),
+                                  ))
                               : Container()
                         ])))),
             Padding(
@@ -355,8 +361,7 @@ class _FirstScreenState extends State<FirstScreen> {
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.fill,
-                            image: new NetworkImage(
-                                "${_imageAvatar}"))))),
+                            image: new NetworkImage("${_imageAvatar}"))))),
           ],
         )));
       });
