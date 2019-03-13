@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:sandbox_flutter/Entities/Users.dart';
 
-Future<dynamic> getUserss() async {
+Future<dynamic> getUsers() async {
   return Firestore.instance.collection('users').getDocuments();
 
   //La forma de obtener el array de documentos:
-  // getUserss().then((result) {
+  // getUsers().then((result) {
   //   --Recorremos los documentos
   //   result.documents.forEach((document) {
   //       document.data['apellido'];
@@ -14,7 +14,7 @@ Future<dynamic> getUserss() async {
   // });
 }
 
-Future<Users> getUserssById(String idUsers) async {
+Future<Users> getUsersById(String idUsers) async {
   return Firestore.instance.collection('users').document(idUsers).get()
   .then((user) {
     return new Users.fromJson(user.data);

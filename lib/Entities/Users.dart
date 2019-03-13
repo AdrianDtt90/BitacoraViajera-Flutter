@@ -23,8 +23,12 @@ class Users {
     return insertUsers(nuevoUsers);
   }
 
-  static Future<dynamic> allUserss () {
-    return getUserss();
+  static Future<dynamic> allUsers () {
+    return getUsers();
+  }
+
+  static Future<dynamic> getUser (String idUser) {
+    return getUsersById(idUser);
   }
 
   //Json configuration

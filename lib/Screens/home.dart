@@ -248,7 +248,7 @@ class _FirstScreenState extends State<FirstScreen> {
   _actualizarPublicaciones() {
     Posts.allPosts().then((result) {
       List<Widget> listPost = new List();
-      List<DocumentSnapshot> lista = result.documents;
+      List<DocumentSnapshot> lista = result;
 
       lista.sort((a, b) => b.data['fecha'].compareTo(a.data['fecha']));
 
@@ -302,6 +302,8 @@ class _FirstScreenState extends State<FirstScreen> {
                       children: listaImagenes)));
         }
 
+        String _imageAvatar = document.data['user'] != null ? document.data['user'].photoUrl.toString() : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
+        
         listPost.add(Container(
             child: Stack(
           children: <Widget>[
@@ -344,21 +346,17 @@ class _FirstScreenState extends State<FirstScreen> {
                                 )
                               : Container()
                         ])))),
-            StoreConnector<Map<String, dynamic>, Map<String, dynamic>>(
-                converter: (store) => store.state['loggedUser'],
-                builder: (context, loggedUser) {
-                  return Padding(
-                      padding: EdgeInsets.only(top: 25.0),
-                      child: Container(
-                          width: 55,
-                          height: 55,
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: new NetworkImage(
-                                      "${loggedUser['photoUrl']}")))));
-                }),
+            Padding(
+                padding: EdgeInsets.only(top: 25.0),
+                child: Container(
+                    width: 55,
+                    height: 55,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new NetworkImage(
+                                "${_imageAvatar}"))))),
           ],
         )));
       });

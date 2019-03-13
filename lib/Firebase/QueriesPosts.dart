@@ -1,9 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:sandbox_flutter/Entities/Posts.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 
 Future<dynamic> getPosts() async {
-  return Firestore.instance.collection('posts').getDocuments();
+  return Firestore.instance.collection('posts').getDocuments().then((result) async {
+    
+    List<DocumentSnapshot> listaPost = new List();
+    //--Recorremos los documentos
+
+    for (var document in result.documents) {
+      //document.data['apellido'];
+        if(document.data['uidUser'] != null) {
+          var user = await Users.getUser(document.data['uidUser']);
+          document.data['user'] = user;  
+        }
+        listaPost.add(document);
+    }
+        
+
+    return listaPost;
+  });
 
   //La forma de obtener el array de documentos:
   // getPosts().then((result) {
