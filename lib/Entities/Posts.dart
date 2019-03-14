@@ -76,7 +76,7 @@ class Posts {
   }
 
   static Future<dynamic> allPosts() {
-    return getPosts();
+    return getPosts(1,10);
   }
 
   //Json configuration
