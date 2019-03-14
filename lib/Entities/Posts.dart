@@ -75,8 +75,8 @@ class Posts {
     return insertPosts(nuevoPosts);
   }
 
-  static Future<dynamic> allPosts() {
-    return getPosts(1,10);
+  static Future<dynamic> allPosts([int pagina = 1, int lote = 5]) {
+    return getPosts(pagina, lote);
   }
 
   //Json configuration

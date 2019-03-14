@@ -164,9 +164,9 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
   List<Widget> _listPost = new List();
-
-  // static DateTime now = DateTime.now();
-  // static String formattedDate = DateFormat('kk:mm:ss  EEE d MMM').format(now);
+  int lote = 2; //Definición por defecto
+  bool _ultimosPost = false;
+  bool _cargandoSigPosts = false;
 
   @override
   initState() {
@@ -174,29 +174,6 @@ class _FirstScreenState extends State<FirstScreen> {
 
     _actualizarPublicaciones();
   }
-
-  // List<TimelineModel> items = [
-  //   TimelineModel(
-  //       MiPhotoSwiper(
-  //           key: Key("1"),
-  //           date: formattedDate,
-  //           width: 200.0,
-  //           height: 300.0,
-  //           content: Text('LISTEN')),
-  //       position: TimelineItemPosition.random,
-  //       iconBackground: Colors.blue,
-  //       icon: Icon(Icons.blur_circular, color: Colors.white)),
-  //   TimelineModel(
-  //       MiCard(
-  //           key: Key("2"),
-  //           date: formattedDate,
-  //           width: 300.0,
-  //           height: 200.0,
-  //           content: Text('LISTEN')),
-  //       position: TimelineItemPosition.random,
-  //       iconBackground: Colors.blue,
-  //       icon: Icon(Icons.blur_circular, color: Colors.white))
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -214,8 +191,30 @@ class _FirstScreenState extends State<FirstScreen> {
                     ListView(children: <Widget>[
                       Column(
                         children: _listPost,
-                      )
-                    ])
+                      ),
+                      _cargandoSigPosts == true
+                          ? Center(
+                              child: SizedBox(
+                                child: CircularProgressIndicator(),
+                                height: 20.0,
+                                width: 20.0,
+                              ),
+                            )
+                          : Container(),
+                      _ultimosPost == false && _cargandoSigPosts == false
+                          ? Padding(
+                              padding: EdgeInsets.only(left: 65.0, right: 5.0),
+                              child: RaisedButton(
+                                child: Text("Ver más..."),
+                                onPressed: () {
+                                  setState(() {
+                                    _cargandoSigPosts = true;
+                                  });
+                                  _actualizarPublicaciones();
+                                },
+                              ))
+                          : Container()
+                    ]),
                   ])
                 : Center(
                     child: SizedBox(
@@ -241,16 +240,19 @@ class _FirstScreenState extends State<FirstScreen> {
     );
 
     if (result == true) {
+      setState(() {
+        _listPost = []; // Volvemos a cargar cuando se agrega uno nuevo
+      });
       _actualizarPublicaciones();
     }
   }
 
   _actualizarPublicaciones() {
-    Posts.allPosts().then((result) {
+    //Por defecto paginacion (lote) de 5
+    var pagina = (_listPost.length / lote).ceil() + 1;
+    Posts.allPosts(pagina, lote).then((result) {
       List<Widget> listPost = new List();
       List<DocumentSnapshot> lista = result;
-
-      lista.sort((a, b) => b.data['fecha'].compareTo(a.data['fecha']));
 
       lista.forEach((document) {
         var adjuntosPost = Container();
@@ -327,7 +329,9 @@ class _FirstScreenState extends State<FirstScreen> {
                           adjuntosPost,
                           document.data['nombreMapa'] != null
                               ? GestureDetector(
-                                  onTap: () => launchMapsUrl(document.data['latitud'], document.data['longitud']),
+                                  onTap: () => launchMapsUrl(
+                                      document.data['latitud'],
+                                      document.data['longitud']),
                                   child: Container(
                                     width: double.infinity,
                                     height: 50.0,
@@ -367,7 +371,9 @@ class _FirstScreenState extends State<FirstScreen> {
       });
 
       setState(() {
-        _listPost = listPost;
+        _listPost = new List.from(_listPost)..addAll(listPost);
+        _ultimosPost = lista.length < lote ? true : false;
+        _cargandoSigPosts = false;
       });
     });
   }

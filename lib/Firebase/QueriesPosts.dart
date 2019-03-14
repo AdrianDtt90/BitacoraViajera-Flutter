@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sandbox_flutter/Entities/Posts.dart';
 import 'package:sandbox_flutter/Entities/Users.dart';
 
-Future<dynamic> getPosts([int pagina = 1, int lote = 2]) async {
+Future<dynamic> getPosts([int pagina = 1, int lote = 5]) async {
   if(pagina <= 0 || lote <= 0) return null;
 
   var first = null;
