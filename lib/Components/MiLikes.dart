@@ -65,6 +65,7 @@ class _MiLikesState extends State<MiLikes> {
               setState(() {
                 _like = _like ? false : true;
                 _cantLikes = _like ? _cantLikes + 1 : _cantLikes > 0 ? _cantLikes - 1 : 0;
+                _cargando = true;
               });
             },
           ),
