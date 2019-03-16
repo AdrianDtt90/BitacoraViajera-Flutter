@@ -25,17 +25,17 @@ Future<Comments> getCommentsById(String idComments) async {
 }
 
 Future<List<Comments>> getCommentsByIdPost(String idPost) async {
-
   return Firestore.instance
       .collection('comments')
       .where("idPost", isEqualTo: idPost)
       .getDocuments()
-      .then((result) {
+      .then((result) async {
     List<Comments> listaComments = new List();
-    result.documents.forEach((document) async {
+
+    for (var document in result.documents) {
       var comment = await Comments.getComment(document.data['idComment']);
       listaComments.add(comment);
-    });
+    }
 
     return listaComments;
   });

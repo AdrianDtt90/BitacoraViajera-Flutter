@@ -7,6 +7,7 @@ class Comments {
   String photoUrl;
   String idPost;
   String comment;
+  String fecha;
 
 
   Comments(this.idComment,
@@ -14,7 +15,8 @@ class Comments {
   this.displayName,
   this.photoUrl,
   this.idPost,
-  this.comment);
+  this.comment,
+  this.fecha);
 
   Future<Comments> update () {
     return updateComments(this);
@@ -31,7 +33,8 @@ class Comments {
     user['displayName'],
     user['photoUrl'],
     user['idPost'],
-    user['comment']);
+    user['comment'],
+    user['fecha']);
     return insertComments(nuevoComments);
   }
 
@@ -54,7 +57,8 @@ class Comments {
         displayName = json['displayName'],
         photoUrl = json['photoUrl'],
         idPost = json['idPost'],
-        comment = json['comment'];
+        comment = json['comment'],
+        fecha = json['fecha'];
 
   Map<String, dynamic> toJson() =>
     {
@@ -64,5 +68,6 @@ class Comments {
       'photoUrl': photoUrl,
       'idPost': idPost,
       'comment': comment,
+      'fecha': fecha,
     };
 }
