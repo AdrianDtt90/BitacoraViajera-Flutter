@@ -315,6 +315,7 @@ class _FirstScreenState extends State<FirstScreen> {
                 padding: EdgeInsets.only(left: 60.0),
                 child: MiCard(
                     key: Key("${document.data['idPost']}"),
+                    idPost: "${document.data['idPost']}",
                     date: "${document.data['fecha']}",
                     width: 300.0,
                     content: Padding(

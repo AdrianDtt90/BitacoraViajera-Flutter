@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:sandbox_flutter/Components/MiLikes.dart';
 import 'package:sandbox_flutter/Components/MiComments.dart';
 
 class MiCard extends StatefulWidget {
+  final String idPost;
   final String date;
   final double width;
   final double height;
   final dynamic content;
 
-  MiCard({Key key, this.date, this.width, this.height, this.content})
+  MiCard({Key key, this.idPost, this.date, this.width, this.height, this.content})
       : super(key: key);
 
   @override
@@ -46,19 +48,7 @@ class _MiCardState extends State<MiCard> {
                 margin: const EdgeInsets.only(left: 10.0),
                 child: Row(
                   children: <Widget>[
-                    Container(
-                        margin: const EdgeInsets.only(right: 10.0),
-                        child: IconButton(
-                          icon: _favourite
-                              ? Icon(Icons.favorite)
-                              : Icon(Icons.favorite_border),
-                          color: Colors.red,
-                          onPressed: () {
-                            setState(() {
-                              _favourite = _favourite ? false : true;
-                            });
-                          },
-                        )),
+                    MiLikes(idPost: widget.idPost),
                     Container(
                         margin: const EdgeInsets.only(right: 10.0),
                         child: IconButton(
