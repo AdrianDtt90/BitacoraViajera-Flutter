@@ -172,7 +172,12 @@ class _FirstScreenState extends State<FirstScreen> {
   initState() {
     super.initState();
 
-    _actualizarPublicaciones();
+    Posts.onFireStoreChange().listen((data) {
+      setState(() {
+        _listPost = []; // Volvemos a cargar cuando se agrega uno nuevo
+      });
+      _actualizarPublicaciones();
+    });
   }
 
   @override

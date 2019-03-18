@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sandbox_flutter/Firebase/QueriesPosts.dart';
 import 'package:sandbox_flutter/Entities/Images.dart';
 import 'package:sandbox_flutter/Entities/Maps.dart';
@@ -77,6 +78,10 @@ class Posts {
 
   static Future<dynamic> allPosts([int pagina = 1, int lote = 5]) {
     return getPosts(pagina, lote);
+  }
+
+  static Stream<QuerySnapshot> onFireStoreChange () {
+    return getPostsListener();
   }
 
   //Json configuration
