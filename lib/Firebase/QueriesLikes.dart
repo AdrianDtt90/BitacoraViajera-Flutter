@@ -14,6 +14,10 @@ Future<dynamic> getLikes() async {
   // });
 }
 
+Stream<QuerySnapshot> getLikesListener () {
+  return Firestore.instance.collection('likes').reference().snapshots();
+}
+
 Future<Likes> getLikesById(String idLikes) async {
   return Firestore.instance
       .collection('likes')

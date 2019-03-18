@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sandbox_flutter/Firebase/QueriesLikes.dart';
 
 class Likes {
@@ -46,6 +47,10 @@ class Likes {
 
   static Future<dynamic> allLikess () {
     return getLikes();
+  }
+
+  static Stream<QuerySnapshot> onFireStoreChange () {
+    return getLikesListener();
   }
 
   //Json configuration

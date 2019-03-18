@@ -30,7 +30,9 @@ class _MiLikesState extends State<MiLikes> {
     _idPost = widget.idPost;
     _user = store.state['loggedUser'];
 
-    actualizarLikes();
+    Likes.onFireStoreChange().listen((data) {
+      actualizarLikes();
+    });
   }
 
   @override
@@ -45,7 +47,7 @@ class _MiLikesState extends State<MiLikes> {
             color: Colors.red,
             onPressed: () {
               if (_like) {
-                Likes.deleteLike(widget.idPost, _user['uid']).then((value){
+                Likes.deleteLike(widget.idPost, _user['uid']).then((value) {
                   actualizarLikes();
                 });
               } else {
@@ -58,20 +60,24 @@ class _MiLikesState extends State<MiLikes> {
                   "photoUrl": _user['photoUrl'],
                   "idPost": widget.idPost,
                 };
-                Likes.create(like).then((value){
+                Likes.create(like).then((value) {
                   actualizarLikes();
                 });
               }
               setState(() {
                 _like = _like ? false : true;
-                _cantLikes = _like ? _cantLikes + 1 : _cantLikes > 0 ? _cantLikes - 1 : 0;
-                _cargando = true;
+                _cantLikes = _like
+                    ? _cantLikes + 1
+                    : _cantLikes > 0 ? _cantLikes - 1 : 0;
               });
             },
           ),
           GestureDetector(
-            child: Text("${_cantLikes} Me ${_cantLikes == 1 ? 'Gusta' : 'Gustas' }"),
+            child: Text(
+                "${_cantLikes} Me ${_cantLikes == 1 ? 'Gusta' : 'Gustas'}"),
             onTap: () {
+              if(_cargando == true) return false;
+              
               Navigator.push(
                 context,
                 MaterialPageRoute(

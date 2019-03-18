@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
@@ -70,7 +71,13 @@ class PostCommentsState extends State<PostComments> {
 
     _idPost = widget.idPost;
     _user = store.state['loggedUser'];
-    actualizarComments();
+
+    Comments.onFireStoreChange().listen((data){
+      setState(() {
+        _cargando = true;
+      });
+      actualizarComments();
+    });
   }
 
   void _handleSubmit(String text) {

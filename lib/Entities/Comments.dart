@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sandbox_flutter/Firebase/QueriesComments.dart';
 
 class Comments {
@@ -48,6 +49,10 @@ class Comments {
 
   static Future<dynamic> allCommentss () {
     return getComments();
+  }
+
+  static Stream<QuerySnapshot> onFireStoreChange () {
+    return getCommentsListener();
   }
 
   //Json configuration

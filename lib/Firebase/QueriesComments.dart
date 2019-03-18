@@ -14,6 +14,10 @@ Future<dynamic> getComments() async {
   // });
 }
 
+Stream<QuerySnapshot> getCommentsListener () {
+  return Firestore.instance.collection('comments').reference().snapshots();
+}
+
 Future<Comments> getCommentsById(String idComments) async {
   return Firestore.instance
       .collection('comments')
