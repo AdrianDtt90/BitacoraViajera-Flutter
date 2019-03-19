@@ -1,18 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 import 'package:sandbox_flutter/Firebase/QueriesLikes.dart';
 
 class Likes {
   String idLike;
   String uidUser;
-  String displayName;
-  String photoUrl;
+  Users user;
   String idPost;
 
 
   Likes(this.idLike,
   this.uidUser,
-  this.displayName,
-  this.photoUrl,
+  this.user,
   this.idPost);
 
   Future<Likes> update () {
@@ -27,8 +26,7 @@ class Likes {
   static Future<Likes> create (Map<String,dynamic> like) {
     Likes nuevoLikes = new Likes(like['idLike'],
     like['uidUser'],
-    like['displayName'],
-    like['photoUrl'],
+    like['user'],
     like['idPost']);
     return insertLikes(nuevoLikes);
   }
@@ -57,16 +55,14 @@ class Likes {
   Likes.fromJson(Map<String, dynamic> json)
       : idLike = json['idLike'],
         uidUser = json['uidUser'],
-        displayName = json['displayName'],
-        photoUrl = json['photoUrl'],
+        user = json['user'],
         idPost = json['idPost'];
 
   Map<String, dynamic> toJson() =>
     {
       'idLike': idLike,
       'uidUser': uidUser,
-      'displayName': displayName,
-      'photoUrl': photoUrl,
+      'user': user,
       'idPost': idPost,
     };
 }

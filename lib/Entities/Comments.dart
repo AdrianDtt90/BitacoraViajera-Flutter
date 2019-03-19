@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 import 'package:sandbox_flutter/Firebase/QueriesComments.dart';
 
 class Comments {
   String idComment;
   String uidUser;
-  String displayName;
-  String photoUrl;
+  Users user;
   String idPost;
   String comment;
   String fecha;
@@ -13,8 +13,7 @@ class Comments {
 
   Comments(this.idComment,
   this.uidUser,
-  this.displayName,
-  this.photoUrl,
+  this.user,
   this.idPost,
   this.comment,
   this.fecha);
@@ -31,8 +30,7 @@ class Comments {
   static Future<Comments> create (Map<String,dynamic> user) {
     Comments nuevoComments = new Comments(user['idComment'],
     user['uidUser'],
-    user['displayName'],
-    user['photoUrl'],
+    user['user'],
     user['idPost'],
     user['comment'],
     user['fecha']);
@@ -59,8 +57,7 @@ class Comments {
   Comments.fromJson(Map<String, dynamic> json)
       : idComment = json['idComment'],
         uidUser = json['uidUser'],
-        displayName = json['displayName'],
-        photoUrl = json['photoUrl'],
+        user = json['user'],
         idPost = json['idPost'],
         comment = json['comment'],
         fecha = json['fecha'];
@@ -69,8 +66,7 @@ class Comments {
     {
       'idComment': idComment,
       'uidUser': uidUser,
-      'displayName': displayName,
-      'photoUrl': photoUrl,
+      'user': user,
       'idPost': idPost,
       'comment': comment,
       'fecha': fecha,

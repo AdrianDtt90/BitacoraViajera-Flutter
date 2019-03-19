@@ -4,10 +4,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:sandbox_flutter/Components/MiImage.dart';
@@ -48,11 +51,42 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ScreenRouter(value: _selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), title: Text('Calendario')),
+              icon: Icon(
+                Icons.home,
+                color: Colors.grey,
+              ),
+              title: Text(
+                'Home',
+                style: TextStyle(color: Colors.grey),
+              )),
           BottomNavigationBarItem(
-              icon: Icon(Icons.image), title: Text('Imagenes')),
+              icon: Icon(
+                Icons.calendar_today,
+                color: Colors.grey,
+              ),
+              title: Text(
+                'Calendario',
+                style: TextStyle(color: Colors.grey),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.map,
+                color: Colors.grey,
+              ),
+              title: Text(
+                'Mapa',
+                style: TextStyle(color: Colors.grey),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.image,
+                color: Colors.grey,
+              ),
+              title: Text(
+                'Imagenes',
+                style: TextStyle(color: Colors.grey),
+              )),
         ],
         currentIndex: _selectedIndex,
         fixedColor: Colors.blue,
@@ -147,6 +181,7 @@ class ScreenRouter extends StatelessWidget {
       0: FirstScreen(value: key),
       1: SecondScreen(value: key),
       2: ThirdScreen(value: key),
+      3: FourthScreen(value: key),
     };
 
     return _list;
@@ -390,9 +425,66 @@ class SecondScreen extends StatelessWidget {
 
   SecondScreen({Key key, this.value}) : super(key: key);
 
+  var _currentDate = DateTime.now();
+  static Widget _eventIcon = new Container(
+    decoration: new BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(1000)),
+        border: Border.all(color: Colors.blue, width: 2.0)),
+    child: new Icon(
+      Icons.person,
+      color: Colors.amber,
+    ),
+  );
+  EventList<Event> _markedDateMap = new EventList<Event>(
+    events: {
+      new DateTime(2019, 3, 10): [
+        new Event(
+          date: new DateTime(2019, 3, 10),
+          title: 'Event 1',
+          icon: _eventIcon,
+        ),
+        new Event(
+          date: new DateTime(2019, 3, 12),
+          title: 'Event 2',
+          icon: _eventIcon,
+        ),
+        new Event(
+          date: new DateTime(2019, 3, 16),
+          title: 'Event 3',
+          icon: _eventIcon,
+        ),
+      ],
+    },
+  );
+
   @override
   Widget build(BuildContext context) {
-    return MyImagePicker();
+    return Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.0),
+        child: CalendarCarousel(
+          thisMonthDayBorderColor: Colors.grey,
+          weekFormat: false,
+          height: 420.0,
+          selectedDateTime: _currentDate,
+          daysHaveCircularBorder: true,
+          daysTextStyle: TextStyle(color: Colors.blue),
+          weekendTextStyle: TextStyle(color: Colors.blue, ),
+          weekdayTextStyle: TextStyle(color: Colors.blue, ),
+          selectedDayButtonColor: Colors.blue,
+          selectedDayBorderColor: Colors.blue,
+          onDayPressed: (DateTime date, List<dynamic> list) {
+            var a = 1;
+          },
+          locale: 'es',
+          markedDatesMap: _markedDateMap,
+          markedDateColor: Colors.red,
+          markedDateIconBorderColor: Colors.red,
+          // headerText: Container(
+          //   /// Example for rendering custom header
+          //   child: Text('Custom Header'),
+          // ),
+        ));
   }
 }
 
@@ -400,6 +492,37 @@ class ThirdScreen extends StatelessWidget {
   final int value;
 
   ThirdScreen({Key key, this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: CustomScrollView(
+      primary: false,
+      slivers: <Widget>[
+        SliverPadding(
+          padding: const EdgeInsets.all(20.0),
+          sliver: SliverGrid.count(
+            crossAxisSpacing: 10.0,
+            crossAxisCount: 2,
+            children: <Widget>[
+              const Text('He\'d have you all unravel at the'),
+              const Text('Heed not the rabble'),
+              const Text('Sound of screams but the'),
+              const Text('Who scream'),
+              const Text('Revolution is coming...'),
+              const Text('Revolution, they...'),
+            ],
+          ),
+        ),
+      ],
+    ));
+  }
+}
+
+class FourthScreen extends StatelessWidget {
+  final int value;
+
+  FourthScreen({Key key, this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

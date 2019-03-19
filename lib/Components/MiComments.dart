@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:sandbox_flutter/Entities/Comments.dart';
@@ -64,6 +65,8 @@ class PostCommentsState extends State<PostComments> {
   String _idPost;
   bool _cargando = true;
 
+  bool _onLoad = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -73,11 +76,15 @@ class PostCommentsState extends State<PostComments> {
     _user = store.state['loggedUser'];
 
     Comments.onFireStoreChange().listen((data){
+      if(data.documents[0].data['uidUser'] == _user['uid'] || _onLoad) return false;
+
       setState(() {
         _cargando = true;
       });
       actualizarComments();
     });
+
+    actualizarComments();
   }
 
   void _handleSubmit(String text) {
@@ -87,8 +94,6 @@ class PostCommentsState extends State<PostComments> {
     Map<String, dynamic> comment = {
       "idComment": "idComment_${rnd.nextInt(100000000)}",
       "uidUser": _user['uid'],
-      "displayName": _user['displayName'],
-      "photoUrl": _user['photoUrl'],
       "idPost": widget.idPost,
       "comment": text,
       "fecha": getStringDateNow()
@@ -184,6 +189,7 @@ class PostCommentsState extends State<PostComments> {
       setState(() {
         _messages = listaComments;
         _cargando = false;
+        _onLoad = false;
       });
     });
   }
@@ -207,10 +213,12 @@ class ChatMessage extends StatelessWidget {
 
   ChatMessage({this.comment});
 
+  var _user = store.state['loggedUser'];
+
   @override
   Widget build(BuildContext context) {
     String _imageAvatar = comment != null
-        ? comment.photoUrl.toString()
+        ? (comment.user != null ? comment.user.photoUrl.toString() : _user['photoUrl'].toString())
         : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
 
     return new Container(
@@ -237,7 +245,7 @@ class ChatMessage extends StatelessWidget {
                 new Row(
                   //crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    new Text(comment.displayName,
+                    new Text(comment.user != null ? comment.user.displayName :  _user['displayName'],
                         style: Theme.of(context).textTheme.subhead),
                     new Padding(
                         padding: EdgeInsets.only(left: 5.0),

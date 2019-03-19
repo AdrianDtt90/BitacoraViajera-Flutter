@@ -56,8 +56,6 @@ class _MiLikesState extends State<MiLikes> {
                 Map<String, dynamic> like = {
                   "idLike": "idLike_${rnd.nextInt(100000000)}",
                   "uidUser": _user['uid'],
-                  "displayName": _user['displayName'],
-                  "photoUrl": _user['photoUrl'],
                   "idPost": widget.idPost,
                 };
                 Likes.create(like).then((value) {
@@ -135,7 +133,7 @@ class LikesList extends StatelessWidget {
     List<ListTile> listResult = new List();
     listaLikes.forEach((like) {
       String _imageAvatar = like != null
-          ? like.photoUrl.toString()
+          ? like.user.photoUrl.toString()
           : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
 
       var itemList = ListTile(
@@ -148,7 +146,7 @@ class LikesList extends StatelessWidget {
                 image: new DecorationImage(
                     fit: BoxFit.fill,
                     image: new NetworkImage("${_imageAvatar}")))),
-        title: Text("${like.displayName}"),
+        title: Text("${like.user.displayName}"),
       );
 
       listResult.add(itemList);

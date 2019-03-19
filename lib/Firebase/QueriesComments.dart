@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:sandbox_flutter/Entities/Comments.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 
 Future<dynamic> getComments() async {
   return Firestore.instance.collection('comments').getDocuments();
@@ -38,6 +39,7 @@ Future<List<Comments>> getCommentsByIdPost(String idPost) async {
 
     for (var document in result.documents) {
       var comment = await Comments.getComment(document.data['idComment']);
+      comment.user = await Users.getUser(comment.uidUser);
       listaComments.add(comment);
     }
 

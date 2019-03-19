@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:sandbox_flutter/Entities/Likes.dart';
+import 'package:sandbox_flutter/Entities/Users.dart';
 
 Future<dynamic> getLikes() async {
   return Firestore.instance.collection('likes').getDocuments();
@@ -14,7 +15,7 @@ Future<dynamic> getLikes() async {
   // });
 }
 
-Stream<QuerySnapshot> getLikesListener () {
+Stream<QuerySnapshot> getLikesListener() {
   return Firestore.instance.collection('likes').reference().snapshots();
 }
 
@@ -38,6 +39,7 @@ Future<List<Likes>> getLikesByIdPost(String idPost) async {
 
     for (var document in result.documents) {
       var like = await Likes.getLike(document.data['idLike']);
+      like.user = await Users.getUser(like.uidUser);
       listaLikes.add(like);
     }
 
