@@ -14,6 +14,7 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:sandbox_flutter/Components/MiImage.dart';
+import 'package:sandbox_flutter/Components/MiListPosts.dart';
 import 'package:sandbox_flutter/Entities/Posts.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
 
@@ -197,72 +198,18 @@ class FirstScreen extends StatefulWidget {
   _FirstScreenState createState() => _FirstScreenState();
 }
 
-class _FirstScreenState extends State<FirstScreen> {
-  List<Widget> _listPost = new List();
-  int lote = 2; //Definición por defecto
-  bool _ultimosPost = false;
-  bool _cargandoSigPosts = false;
+class _FirstScreenState extends State<FirstScreen> {  
 
   @override
   initState() {
     super.initState();
-
-    Posts.onFireStoreChange().listen((data) {
-      setState(() {
-        _listPost = []; // Volvemos a cargar cuando se agrega uno nuevo
-      });
-      _actualizarPublicaciones();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: null,
-        body: Container(
-            child: _listPost.length > 0
-                ? Stack(children: <Widget>[
-                    Container(
-                      height: double.infinity,
-                      width: 1.0,
-                      color: Colors.black,
-                      margin: const EdgeInsets.only(left: 28.0, right: 28.0),
-                    ),
-                    ListView(children: <Widget>[
-                      Column(
-                        children: _listPost,
-                      ),
-                      _cargandoSigPosts == true
-                          ? Center(
-                              child: SizedBox(
-                                child: CircularProgressIndicator(),
-                                height: 20.0,
-                                width: 20.0,
-                              ),
-                            )
-                          : Container(),
-                      _ultimosPost == false && _cargandoSigPosts == false
-                          ? Padding(
-                              padding: EdgeInsets.only(left: 65.0, right: 5.0),
-                              child: RaisedButton(
-                                child: Text("Ver más..."),
-                                onPressed: () {
-                                  setState(() {
-                                    _cargandoSigPosts = true;
-                                  });
-                                  _actualizarPublicaciones();
-                                },
-                              ))
-                          : Container()
-                    ]),
-                  ])
-                : Center(
-                    child: SizedBox(
-                      child: CircularProgressIndicator(),
-                      height: 50.0,
-                      width: 50.0,
-                    ),
-                  )),
+        body: MiListPosts(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             _navigateToCreatePost(context);
@@ -278,213 +225,85 @@ class _FirstScreenState extends State<FirstScreen> {
       context,
       MaterialPageRoute(builder: (context) => MiInputPost()),
     );
-
-    if (result == true) {
-      setState(() {
-        _listPost = []; // Volvemos a cargar cuando se agrega uno nuevo
-      });
-      _actualizarPublicaciones();
-    }
-  }
-
-  _actualizarPublicaciones() {
-    //Por defecto paginacion (lote) de 5
-    var pagina = (_listPost.length / lote).ceil() + 1;
-    Posts.allPosts(pagina, lote).then((result) {
-      List<Widget> listPost = new List();
-      List<DocumentSnapshot> lista = result;
-
-      lista.forEach((document) {
-        var adjuntosPost = Container();
-
-        if (document.data['adjuntos'] != null &&
-            document.data['adjuntos'].length > 0) {
-          //Creamos imagenes de acuardo a las url de la BD
-          List<Map<String, dynamic>> listAdjuntos = new List();
-          document.data['adjuntos'].forEach((url) {
-            Map<String, dynamic> imagen = {
-              'tipo': 'image',
-              'fileType': 0, //Externa
-              'src': url
-            };
-            listAdjuntos.add(imagen);
-          });
-
-          //Creamos las imagenes que se vana mostrar en el post (solo hasta 4)
-          List<Widget> listaImagenes = new List();
-          int count = 1;
-          listAdjuntos.forEach((imagen) {
-            if (count > 4) {
-              listaImagenes.add(MiImage(
-                  linkTexto: '+ ver más',
-                  currentUrl: imagen['src'],
-                  fileType: 0,
-                  listImages: listAdjuntos));
-              return true;
-            }
-
-            listaImagenes.add(Container(
-              width: 150,
-              height: 150,
-              child: MiImage(
-                  currentUrl: imagen['src'],
-                  fileType: 0,
-                  listImages: listAdjuntos), //Internal
-            ));
-
-            count++;
-          });
-
-          adjuntosPost = Container(
-              child: Padding(
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                  child: Wrap(
-                      spacing: 8.0, // gap between adjacent chips
-                      runSpacing: 4.0, // gap between lines
-                      children: listaImagenes)));
-        }
-
-        String _imageAvatar = document.data['user'] != null
-            ? document.data['user'].photoUrl.toString()
-            : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
-
-        listPost.add(Container(
-            child: Stack(
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(left: 60.0),
-                child: MiCard(
-                    key: Key("${document.data['idPost']}"),
-                    idPost: "${document.data['idPost']}",
-                    date: "${document.data['fecha']}",
-                    width: 300.0,
-                    content: Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                        child: Column(children: <Widget>[
-                          Text("${document.data['titulo']}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18.0)),
-                          Padding(
-                              padding: EdgeInsets.only(bottom: 10.0),
-                              child: Text("${document.data['descripcion']}")),
-                          adjuntosPost,
-                          document.data['nombreMapa'] != null
-                              ? GestureDetector(
-                                  onTap: () => launchMapsUrl(
-                                      document.data['latitud'],
-                                      document.data['longitud']),
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 50.0,
-                                    decoration: BoxDecoration(
-                                        color:
-                                            Color.fromRGBO(248, 248, 248, 1)),
-                                    child: Row(children: <Widget>[
-                                      Padding(
-                                          padding: EdgeInsets.only(bottom: 2.0),
-                                          child: IconButton(
-                                            //Map
-                                            icon: Icon(Icons.place),
-                                            color: Color.fromRGBO(232, 3, 3, 1),
-                                            onPressed: () {},
-                                          )),
-                                      Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child: Text(
-                                              document.data['nombreMapa'],
-                                              overflow: TextOverflow.ellipsis))
-                                    ]),
-                                  ))
-                              : Container()
-                        ])))),
-            Padding(
-                padding: EdgeInsets.only(top: 25.0),
-                child: Container(
-                    width: 55,
-                    height: 55,
-                    decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: new DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new NetworkImage("${_imageAvatar}"))))),
-          ],
-        )));
-      });
-
-      setState(() {
-        _listPost = new List.from(_listPost)..addAll(listPost);
-        _ultimosPost = lista.length < lote ? true : false;
-        _cargandoSigPosts = false;
-      });
-    });
   }
 }
 
-class SecondScreen extends StatelessWidget {
+class SecondScreen extends StatefulWidget {
   final int value;
 
   SecondScreen({Key key, this.value}) : super(key: key);
 
+  @override
+  _SecondScreenState createState() => _SecondScreenState();
+}
+
+class _SecondScreenState extends State<SecondScreen> {
+
   var _currentDate = DateTime.now();
-  static Widget _eventIcon = new Container(
-    decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(1000)),
-        border: Border.all(color: Colors.blue, width: 2.0)),
-    child: new Icon(
-      Icons.person,
-      color: Colors.amber,
-    ),
-  );
-  EventList<Event> _markedDateMap = new EventList<Event>(
+
+  EventList<Widget> _markedDateMap = new EventList<Widget>(
     events: {
-      new DateTime(2019, 3, 10): [
-        new Event(
-          date: new DateTime(2019, 3, 10),
-          title: 'Event 1',
-          icon: _eventIcon,
-        ),
-        new Event(
-          date: new DateTime(2019, 3, 12),
-          title: 'Event 2',
-          icon: _eventIcon,
-        ),
-        new Event(
-          date: new DateTime(2019, 3, 16),
-          title: 'Event 3',
-          icon: _eventIcon,
-        ),
+      new DateTime(2019, 3, 14): [
+        Container()
       ],
     },
   );
 
   @override
+  initState() {
+    super.initState();
+
+    Map<String,dynamic> filtros = {
+      "monthYear": {
+        "year": 2019,
+        "month": 3
+      }
+    };
+    Posts.allPostsFilters(filtros).then((values) {
+      //Los del mes!!
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 16.0),
-        child: CalendarCarousel(
+        child: CalendarCarousel<Widget>(
           thisMonthDayBorderColor: Colors.grey,
-          weekFormat: false,
-          height: 420.0,
           selectedDateTime: _currentDate,
           daysHaveCircularBorder: true,
           daysTextStyle: TextStyle(color: Colors.blue),
           weekendTextStyle: TextStyle(color: Colors.blue, ),
           weekdayTextStyle: TextStyle(color: Colors.blue, ),
-          selectedDayButtonColor: Colors.blue,
+          selectedDayButtonColor: Colors.lightBlue,
           selectedDayBorderColor: Colors.blue,
           onDayPressed: (DateTime date, List<dynamic> list) {
             var a = 1;
           },
+          onCalendarChanged: (DateTime date) {
+            var a = 1;
+          },
           locale: 'es',
           markedDatesMap: _markedDateMap,
-          markedDateColor: Colors.red,
-          markedDateIconBorderColor: Colors.red,
           // headerText: Container(
           //   /// Example for rendering custom header
           //   child: Text('Custom Header'),
           // ),
         ));
+  }
+
+  void postDelMesAno() async {
+    Map<String,dynamic> filtros = {
+      "monthYear": {
+        "year": 2019,
+        "month": 3
+      }
+    };
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MiListPosts(filters: filtros)),
+    );
   }
 }
 

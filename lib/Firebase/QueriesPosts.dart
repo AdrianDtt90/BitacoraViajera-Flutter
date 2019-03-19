@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:sandbox_flutter/Entities/Posts.dart';
 import 'package:sandbox_flutter/Entities/Users.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 
 Future<dynamic> getPosts([int pagina = 1, int lote = 5]) async {
   if (pagina <= 0 || lote <= 0) return null;
 
   var first = null;
+
   if (pagina - 1 == 0) {
     first = Firestore.instance
         .collection("posts")
@@ -50,11 +52,45 @@ Future<dynamic> getPosts([int pagina = 1, int lote = 5]) async {
   // });
 }
 
-Future<List<DocumentSnapshot>> addUserToResult(result) async {
+Future<dynamic> getPostsFilters(Map<String, dynamic> filters) async {
+  var first = null;
+
+  first =
+      Firestore.instance.collection("posts").orderBy("fecha").getDocuments();
+
+  return first.then((documentSnapshots) {
+    return addUserToResult(documentSnapshots, filters);
+  });
+
+  //La forma de obtener el array de documentos:
+  // getPosts().then((result) {
+  //   --Recorremos los documentos
+  //   result.documents.forEach((document) {
+  //       document.data['apellido'];
+  //   });
+  // });
+}
+
+Future<List<DocumentSnapshot>> addUserToResult(result,
+    [Map<String, dynamic> filters]) async {
   List<DocumentSnapshot> listaPost = new List();
   //--Recorremos los documentos
 
   for (var document in result.documents) {
+    if (filters != null) {
+      if (filters['monthYear'] != null) {
+        DateTime date1 = DateTime.utc(
+            filters['monthYear']['year'], filters['monthYear']['month'], 1);
+        DateTime date2 = DateTime.utc(
+            filters['monthYear']['year'], filters['monthYear']['month'] + 1, 1);
+
+        DateTime dateData = getDateFromString(document.data['fecha']);
+
+        if (date1.millisecondsSinceEpoch > dateData.millisecondsSinceEpoch ||
+            date2.millisecondsSinceEpoch <= dateData.millisecondsSinceEpoch)
+          continue;
+      }
+    }
     //document.data['apellido'];
     if (document.data['uidUser'] != null) {
       var user = await Users.getUser(document.data['uidUser']);

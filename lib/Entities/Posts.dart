@@ -77,7 +77,11 @@ class Posts {
   }
 
   static Future<dynamic> allPosts([int pagina = 1, int lote = 5]) {
-    return getPosts(pagina, lote);
+      return getPosts(pagina, lote);
+  }
+
+  static Future<dynamic> allPostsFilters(Map<String, dynamic> filters) {
+      return getPostsFilters(filters);
   }
 
   static Stream<QuerySnapshot> onFireStoreChange () {
