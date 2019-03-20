@@ -259,8 +259,12 @@ class _SecondScreenState extends State<SecondScreen> {
         "month": 3
       }
     };
-    Posts.allPostsFilters(filtros).then((values) {
+    var service = Posts.allPosts(1, 5, filtros);
+    
+    service.then((result) {
+    
       //Los del mes!!
+      var a = 1;
     });
   }
 

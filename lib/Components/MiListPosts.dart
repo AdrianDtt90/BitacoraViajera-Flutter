@@ -19,7 +19,7 @@ class MiListPosts extends StatefulWidget {
 
 class _MiListPostsState extends State<MiListPosts> {
   List<Widget> _listPost = new List();
-  int lote = 2; //Definición por defecto
+  int lote = 5; //Definición por defecto
   bool _ultimosPost = false;
   bool _cargandoSigPosts = false;
 
@@ -85,13 +85,10 @@ class _MiListPostsState extends State<MiListPosts> {
 
   _actualizarPublicaciones() {
     var service;
-    if(widget.filters != null){
-      service = Posts.allPostsFilters(widget.filters);
-    } else {
-      //Por defecto paginacion (lote) de 5
-      var pagina = (_listPost.length / lote).ceil() + 1;
-      service = Posts.allPosts(pagina, lote);
-    }
+    
+    //Por defecto paginacion (lote) de 5
+    var pagina = (_listPost.length / lote).ceil() + 1;
+    service = Posts.allPosts(pagina, lote, widget.filters);
     
     service.then((result) {
       List<Widget> listPost = new List();

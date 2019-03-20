@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sandbox_flutter/Components/MiImage.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 
 import 'package:sandbox_flutter/MyFunctionalities/MyImagePicker.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/index.dart';
@@ -258,7 +259,7 @@ class _MiInputPostState extends State<MiInputPost> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   onPressed: () {
-                                    _publicarPost();
+                                    _publicarPost(context);
                                   },
                                 ),
                               ))),
@@ -298,7 +299,9 @@ class _MiInputPostState extends State<MiInputPost> {
         ));
   }
 
-  void _publicarPost() {
+  void _publicarPost(BuildContext context) {
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     Random rnd = new Random();
     List<String> listaAdjuntos = new List();
 
@@ -306,6 +309,7 @@ class _MiInputPostState extends State<MiInputPost> {
       "idPost": "idPost_${rnd.nextInt(100000000)}",
       "titulo": _controllerTitulo.text,
       "descripcion": _controllerDescripcion.text,
+      "timespan": getDateFromString("${_controllerFecha.text}").millisecondsSinceEpoch,
       "fecha": "${_controllerFecha.text} ${_controllerHora.text}",
       "uidUser": store.state['loggedUser']['uid'],
       "nombreMapa": _mapa != null ? _mapa['text'] : null,

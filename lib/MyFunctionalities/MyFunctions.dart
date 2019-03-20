@@ -5,5 +5,9 @@ String formatStringDate (String date) {
 }
 
 DateTime getDateFromString(String date) {
-  return DateTime.parse(formatStringDate(date));
+  try {
+    return DateTime.parse(formatStringDate(date));
+  } catch (e) {
+    return DateTime.now();
+  }
 } 

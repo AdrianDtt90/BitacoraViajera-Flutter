@@ -9,6 +9,7 @@ class Posts {
   String titulo;
   String descripcion;
   String fecha;
+  int timespan;
   String idPost;
   String uidUser;
   String nombreMapa;
@@ -16,7 +17,7 @@ class Posts {
   double longitud;
   List<String> adjuntos;
 
-  Posts(this.idPost, this.titulo, this.descripcion, this.fecha, this.uidUser,
+  Posts(this.idPost, this.titulo, this.descripcion, this.fecha, this.timespan, this.uidUser,
       this.nombreMapa, this.latitud, this.longitud, this.adjuntos);
 
   Future<Posts> update() {
@@ -34,6 +35,7 @@ class Posts {
         user['titulo'],
         user['descripcion'],
         user['fecha'],
+        user['timespan'],
         user['uidUser'],
         user['nombreMapa'],
         user['latitud'],
@@ -76,12 +78,8 @@ class Posts {
     return insertPosts(nuevoPosts);
   }
 
-  static Future<dynamic> allPosts([int pagina = 1, int lote = 5]) {
-      return getPosts(pagina, lote);
-  }
-
-  static Future<dynamic> allPostsFilters(Map<String, dynamic> filters) {
-      return getPostsFilters(filters);
+  static Future<dynamic> allPosts([int pagina = 1, int lote = 5, Map<String, dynamic> filters]) {
+      return getPosts(pagina, lote, filters);
   }
 
   static Stream<QuerySnapshot> onFireStoreChange () {
@@ -94,6 +92,7 @@ class Posts {
         titulo = json['titulo'],
         descripcion = json['descripcion'],
         fecha = json['fecha'],
+        timespan = json['timespan'],
         uidUser = json['uidUser'],
         nombreMapa = json['nombreMapa'],
         latitud = json['latitud'],
@@ -105,6 +104,7 @@ class Posts {
         'titulo': titulo,
         'descripcion': descripcion,
         'fecha': fecha,
+        'timespan': timespan,
         'uidUser': uidUser,
         'nombreMapa': nombreMapa,
         'latitud': latitud,
