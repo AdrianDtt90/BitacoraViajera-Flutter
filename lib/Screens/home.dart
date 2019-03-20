@@ -16,7 +16,9 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:sandbox_flutter/Components/MiImage.dart';
 import 'package:sandbox_flutter/Components/MiListPosts.dart';
 import 'package:sandbox_flutter/Entities/Posts.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
+import 'package:sandbox_flutter/Screens/listPosts.dart';
 
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
@@ -198,8 +200,7 @@ class FirstScreen extends StatefulWidget {
   _FirstScreenState createState() => _FirstScreenState();
 }
 
-class _FirstScreenState extends State<FirstScreen> {  
-
+class _FirstScreenState extends State<FirstScreen> {
   @override
   initState() {
     super.initState();
@@ -238,75 +239,109 @@ class SecondScreen extends StatefulWidget {
 }
 
 class _SecondScreenState extends State<SecondScreen> {
-
   var _currentDate = DateTime.now();
-
+  bool _cargando = true;
   EventList<Widget> _markedDateMap = new EventList<Widget>(
     events: {
-      new DateTime(2019, 3, 14): [
-        Container()
-      ],
+      // NADA
     },
   );
 
   @override
   initState() {
     super.initState();
-
-    Map<String,dynamic> filtros = {
-      "monthYear": {
-        "year": 2019,
-        "month": 3
-      }
-    };
-    var service = Posts.allPosts(1, 5, filtros);
-    
-    service.then((result) {
-    
-      //Los del mes!!
-      var a = 1;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.0),
-        child: CalendarCarousel<Widget>(
-          thisMonthDayBorderColor: Colors.grey,
-          selectedDateTime: _currentDate,
-          daysHaveCircularBorder: true,
-          daysTextStyle: TextStyle(color: Colors.blue),
-          weekendTextStyle: TextStyle(color: Colors.blue, ),
-          weekdayTextStyle: TextStyle(color: Colors.blue, ),
-          selectedDayButtonColor: Colors.lightBlue,
-          selectedDayBorderColor: Colors.blue,
-          onDayPressed: (DateTime date, List<dynamic> list) {
-            var a = 1;
-          },
-          onCalendarChanged: (DateTime date) {
-            var a = 1;
-          },
-          locale: 'es',
-          markedDatesMap: _markedDateMap,
-          // headerText: Container(
-          //   /// Example for rendering custom header
-          //   child: Text('Custom Header'),
-          // ),
-        ));
+    return Stack(
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.symmetric(horizontal: 16.0),
+            child: CalendarCarousel<Widget>(
+              thisMonthDayBorderColor: Colors.grey,
+              selectedDateTime: _currentDate,
+              daysHaveCircularBorder: true,
+              daysTextStyle: TextStyle(color: Colors.blue),
+              weekendTextStyle: TextStyle(
+                color: Colors.blue,
+              ),
+              weekdayTextStyle: TextStyle(
+                color: Colors.blue,
+              ),
+              selectedDayButtonColor: Colors.lightBlue,
+              selectedDayBorderColor: Colors.blue,
+              onDayPressed: (DateTime date, List<dynamic> list) {
+                postDelMesAno(date);
+              },
+              onCalendarChanged: (DateTime date) {
+                setState(() {
+                  _cargando = true;
+                });
+                actualizarMarkadores(date);
+              },
+              locale: 'es',
+              markedDatesMap: _markedDateMap,
+              // headerText: Container(
+              //   /// Example for rendering custom header
+              //   child: Text('Custom Header'),
+              // ),
+            )),
+        _cargando != false
+            ? Container(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(232, 232, 232, 0.6)
+              ),
+                child: Center(
+                    child: SizedBox(
+                child: CircularProgressIndicator(),
+                height: 50.0,
+                width: 50.0,
+              )))
+            : Container()
+      ],
+    );
   }
 
-  void postDelMesAno() async {
-    Map<String,dynamic> filtros = {
-      "monthYear": {
-        "year": 2019,
-        "month": 3
-      }
+  void actualizarMarkadores(DateTime date) async {
+    Map<String, dynamic> filtros = {
+      "monthYear": {"year": date.year, "month": date.month}
+    };
+    var service = Posts.allPosts(1, 5, filtros);
+    service.then((result) {
+      //Los del mes!!
+      Map<DateTime, List<Widget>> events = {};
+      result.forEach((post) {
+        DateTime date =
+            new DateTime.fromMillisecondsSinceEpoch(post.data['timestamp']);
+        // events[]
+        events[date] = [Container()];
+      });
+
+      EventList<Widget> markedDateMap = new EventList<Widget>(
+        events: events,
+      );
+
+      setState(() {
+        _markedDateMap = markedDateMap;
+        _cargando = false;
+      });
+    });
+  }
+
+  void postDelMesAno(DateTime date) async {
+    Map<String, dynamic> filtros = {
+      "monthYear": {"year": date.year, "month": date.month, "day": date.day}
     };
 
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MiListPosts(filters: filtros)),
+      MaterialPageRoute(
+          builder: (context) => ListPosts(
+              filters: filtros,
+              title: '${date.day} de ' +
+                  getMonthById(date.month) +
+                  ' de ${date.year}')),
     );
   }
 }

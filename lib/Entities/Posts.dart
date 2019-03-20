@@ -9,7 +9,7 @@ class Posts {
   String titulo;
   String descripcion;
   String fecha;
-  int timespan;
+  int timestamp;
   String idPost;
   String uidUser;
   String nombreMapa;
@@ -17,7 +17,7 @@ class Posts {
   double longitud;
   List<String> adjuntos;
 
-  Posts(this.idPost, this.titulo, this.descripcion, this.fecha, this.timespan, this.uidUser,
+  Posts(this.idPost, this.titulo, this.descripcion, this.fecha, this.timestamp, this.uidUser,
       this.nombreMapa, this.latitud, this.longitud, this.adjuntos);
 
   Future<Posts> update() {
@@ -35,7 +35,7 @@ class Posts {
         user['titulo'],
         user['descripcion'],
         user['fecha'],
-        user['timespan'],
+        user['timestamp'],
         user['uidUser'],
         user['nombreMapa'],
         user['latitud'],
@@ -92,7 +92,7 @@ class Posts {
         titulo = json['titulo'],
         descripcion = json['descripcion'],
         fecha = json['fecha'],
-        timespan = json['timespan'],
+        timestamp = json['timestamp'],
         uidUser = json['uidUser'],
         nombreMapa = json['nombreMapa'],
         latitud = json['latitud'],
@@ -104,7 +104,7 @@ class Posts {
         'titulo': titulo,
         'descripcion': descripcion,
         'fecha': fecha,
-        'timespan': timespan,
+        'timestamp': timestamp,
         'uidUser': uidUser,
         'nombreMapa': nombreMapa,
         'latitud': latitud,

@@ -10,19 +10,40 @@ Future<dynamic> getPosts([int pagina = 1, int lote = 5, Map<String, dynamic> fil
   var first = null;
   var service = Firestore.instance
         .collection("posts")
-        .orderBy("timespan", descending: true);
+        .orderBy("timestamp", descending: true);
 
   //Filtros
   if (filters != null) {
     if (filters['monthYear'] != null) {
+      int year1 = DateTime.now().year;
+      int month1 = 1;
+      int day1 = 1;
+
+      int year2 = DateTime.now().year + 1;
+      int month2 = 1;
+      int day2 = 1;
+
+      if(filters['monthYear']['year'] != null) {
+        year1 = filters['monthYear']['year'];
+        year2 = filters['monthYear']['month'] != null ? filters['monthYear']['year'] : filters['monthYear']['year'] + 1;
+      }
+      if(filters['monthYear']['month'] != null) {
+        month1 = filters['monthYear']['month'];
+        month2 = filters['monthYear']['day'] != null ? filters['monthYear']['month'] : filters['monthYear']['month'] + 1;
+      }
+      if(filters['monthYear']['day'] != null) {
+        day1 = filters['monthYear']['day'];
+        day2 = filters['monthYear']['day'] + 1;
+      }
+
       DateTime date1 = DateTime.utc(
-          filters['monthYear']['year'], filters['monthYear']['month'], 1);
+          year1, month1, day1);
       DateTime date2 = DateTime.utc(
-          filters['monthYear']['year'], filters['monthYear']['month'] + 1, 1);
+          year2, month2, day2);
 
       service = service
-      .where("timespan", isGreaterThanOrEqualTo: date1.millisecondsSinceEpoch)
-      .where("timespan", isLessThan: date2.millisecondsSinceEpoch);
+      .where("timestamp", isGreaterThanOrEqualTo: date1.millisecondsSinceEpoch)
+      .where("timestamp", isLessThan: date2.millisecondsSinceEpoch);
     }
   }
 
@@ -43,7 +64,7 @@ Future<dynamic> getPosts([int pagina = 1, int lote = 5, Map<String, dynamic> fil
           documentSnapshots.documents[documentSnapshots.documents.length - 1];
 
       return service
-          .startAfter([lastVisible.data['timespan']])
+          .startAfter([lastVisible.data['timestamp']])
           .limit(lote)
           .getDocuments()
           .then((documentSnapshots2) {
