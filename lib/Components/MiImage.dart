@@ -110,7 +110,7 @@ class ImageViewer extends StatelessWidget {
       imageProvider: getImageWidget(currentUrl, fileType),
     );
     if (listImages == null || (listImages != null && listImages.length > 1)) {
-      src = getImagesViewer(listImages);
+      src = getImagesViewer(currentUrl, listImages);
     }
 
     return Container(color: Colors.black, child: src);
@@ -128,13 +128,36 @@ class ImageViewer extends StatelessWidget {
     }
   }
 
-  dynamic getImagesViewer(List<Map<String, dynamic>> list) {
+  dynamic getImagesViewer(String currentUrl, List<Map<String, dynamic>> list) {
     if (list == null) return Container();
 
     List<PhotoViewGalleryPageOptions> listSrc = new List();
     int count = 1;
 
+    //Ordenamos para que aparezca primera la foto actual
+    //////////////////////////////////////////////////////
+    Map<String, dynamic> srcActual;
+    int countIndex = 0;
+    List<Map<String, dynamic>> listaImagenes = new List();
     list.forEach((image) {
+      if (image['src'] == currentUrl) {
+        srcActual = image;
+        var a = 1;
+      } else {
+        if (srcActual != null) {
+          listaImagenes.insert(countIndex, image);
+          countIndex++;
+        } else {
+          listaImagenes.add(image);
+        }
+      }
+    });
+
+    if(srcActual != null)
+      listaImagenes.insert(0, srcActual);
+    //////////////////////////////////////////////////////
+
+    listaImagenes.forEach((image) {
       if (image['src'] == null) return false;
 
       listSrc.add(PhotoViewGalleryPageOptions(
