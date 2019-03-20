@@ -13,8 +13,10 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sandbox_flutter/Components/MiImage.dart';
 import 'package:sandbox_flutter/Components/MiListPosts.dart';
+import 'package:sandbox_flutter/Entities/Images.dart';
 import 'package:sandbox_flutter/Entities/Posts.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
@@ -32,6 +34,8 @@ import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/MyGeolocation.dart
 
 import 'package:sandbox_flutter/Components/MiInputPost.dart';
 
+GlobalKey<ScaffoldState> scaffoldState = new GlobalKey();
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
 
@@ -48,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldState,
       appBar: AppBar(
         title: Text('Bitacora Viajera'),
       ),
@@ -289,15 +294,14 @@ class _SecondScreenState extends State<SecondScreen> {
             )),
         _cargando != false
             ? Container(
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(232, 232, 232, 0.6)
-              ),
+                decoration:
+                    BoxDecoration(color: Color.fromRGBO(232, 232, 232, 0.6)),
                 child: Center(
                     child: SizedBox(
-                child: CircularProgressIndicator(),
-                height: 50.0,
-                width: 50.0,
-              )))
+                  child: CircularProgressIndicator(),
+                  height: 50.0,
+                  width: 50.0,
+                )))
             : Container()
       ],
     );
@@ -377,33 +381,81 @@ class ThirdScreen extends StatelessWidget {
   }
 }
 
-class FourthScreen extends StatelessWidget {
+class FourthScreen extends StatefulWidget {
   final int value;
 
   FourthScreen({Key key, this.value}) : super(key: key);
+  @override
+  _FourthScreenState createState() => _FourthScreenState();
+}
+
+class _FourthScreenState extends State<FourthScreen> {
+  Widget _listaImages = Container();
+  bool _cargando = true;
+
+  @override
+  initState() {
+    super.initState();
+
+    var service = Images.allImages();
+    service.then((images) {
+      getImagesViewer(images);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: CustomScrollView(
-      primary: false,
-      slivers: <Widget>[
-        SliverPadding(
-          padding: const EdgeInsets.all(20.0),
-          sliver: SliverGrid.count(
-            crossAxisSpacing: 10.0,
-            crossAxisCount: 2,
-            children: <Widget>[
-              const Text('He\'d have you all unravel at the'),
-              const Text('Heed not the rabble'),
-              const Text('Sound of screams but the'),
-              const Text('Who scream'),
-              const Text('Revolution is coming...'),
-              const Text('Revolution, they...'),
-            ],
-          ),
-        ),
-      ],
-    ));
+    if (_cargando == true) {
+      return Container(
+          decoration: BoxDecoration(color: Color.fromRGBO(232, 232, 232, 0.6)),
+          child: Center(
+              child: SizedBox(
+            child: CircularProgressIndicator(),
+            height: 50.0,
+            width: 50.0,
+          )));
+    }
+    return Container(child: _listaImages);
+  }
+
+  dynamic getImagesViewer(List<Images> list) {
+    //Creamos imagenes de acuardo a las url de la BD
+    List<Map<String, dynamic>> listAdjuntos = new List();
+    list.forEach((image) {
+      Map<String, dynamic> imagen = {
+        'tipo': 'image',
+        'fileType': 0, //Externa
+        'src': image.src
+      };
+      listAdjuntos.add(imagen);
+    });
+
+    //Creamos las imagenes que se vana mostrar en el post (solo hasta 4)
+    List<Widget> listaImagenes = new List();
+
+    listAdjuntos.forEach((imagen) {
+      var size =
+          (MediaQuery.of(scaffoldState.currentContext).size.width / 2) - 19;
+
+      listaImagenes.add(Container(
+        width: size,
+        height: size,
+        child: MiImage(
+            currentUrl: imagen['src'],
+            fileType: 0,
+            listImages: listAdjuntos), //Internal
+      ));
+    });
+
+    setState(() {
+      _cargando = false;
+      _listaImages = Center(
+          child: Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Wrap(
+                  spacing: 10.0, // gap between adjacent chips
+                  runSpacing: 4.0, // gap between lines
+                  children: listaImagenes)));
+    });
   }
 }

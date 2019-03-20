@@ -25,7 +25,7 @@ class Images {
     return insertImages(nuevoImages);
   }
 
-  static Future<dynamic> allImagess () {
+  static Future<dynamic> allImages () {
     return getImages();
   }
 
