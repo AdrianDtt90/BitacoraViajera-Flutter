@@ -9,8 +9,7 @@ Future<dynamic> getPosts([int pagina = 1, int lote = 5, Map<String, dynamic> fil
 
   var first = null;
   var service = Firestore.instance
-        .collection("posts")
-        .orderBy("timestamp", descending: true);
+        .collection("posts");
 
   //Filtros
   if (filters != null) {
@@ -41,29 +40,35 @@ Future<dynamic> getPosts([int pagina = 1, int lote = 5, Map<String, dynamic> fil
       DateTime date2 = DateTime.utc(
           year2, month2, day2);
 
-      service = service
+      first = service
       .where("timestamp", isGreaterThanOrEqualTo: date1.millisecondsSinceEpoch)
       .where("timestamp", isLessThan: date2.millisecondsSinceEpoch);
     }
-  }
 
-  if (pagina - 1 == 0) {
-    first = service
-        .limit(lote)
-        .getDocuments();
+    if (filters['markador'] != null) {
+      first = service
+      .where("latitud", isEqualTo: filters['markador']['lat'])
+      .where("longitud", isEqualTo: filters['markador']['lon']);
+      
+      // var service = Firestore.instance
+      //   .collection("posts")
+      //   .where("latitud", isEqualTo: -33.865143)
+      //   .getDocuments();
+    }
   } else {
-    first = service
-        .limit(lote * (pagina - 1))
-        .getDocuments();
+    first = service.orderBy("timestamp", descending: true);
   }
 
-  return first.then((documentSnapshots) {
+
+  return first
+        .limit(pagina - 1 == 0 ? lote : lote * (pagina - 1))
+        .getDocuments().then((documentSnapshots) {
     if (documentSnapshots.documents.length > lote || pagina > 1) {
       // Conseguimos los siguientes
       var lastVisible =
           documentSnapshots.documents[documentSnapshots.documents.length - 1];
 
-      return service
+      return first
           .startAfter([lastVisible.data['timestamp']])
           .limit(lote)
           .getDocuments()
