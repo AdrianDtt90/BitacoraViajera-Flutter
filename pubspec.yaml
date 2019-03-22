@@ -44,6 +44,9 @@ dependencies:
   #URL External
   url_launcher: ^5.0.1
 
+  location: ^1.4.1
+  latlong: ^0.6.1
+
   #Request library
   http:
 

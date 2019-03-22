@@ -35,6 +35,9 @@ import 'package:sandbox_flutter/MyFunctionalities/MyMapPicker/MyGeolocation.dart
 
 import 'package:sandbox_flutter/Components/MiInputPost.dart';
 
+import 'package:location/location.dart' as LocationManager;
+import 'package:latlong/latlong.dart';
+
 GlobalKey<ScaffoldState> scaffoldState = new GlobalKey();
 
 class MyHomePage extends StatefulWidget {
@@ -210,6 +213,23 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   initState() {
     super.initState();
+
+    getUserLocation();
+  }
+
+  Future<LatLng> getUserLocation() async {
+    var currentLocation = <String, double>{};
+    final location = LocationManager.Location();
+    try {
+      currentLocation = await location.getLocation();
+      final lat = currentLocation["latitude"];
+      final lng = currentLocation["longitude"];
+      final center = LatLng(lat, lng);
+      return center;
+    } on Exception {
+      currentLocation = null;
+      return null;
+    }
   }
 
   @override
