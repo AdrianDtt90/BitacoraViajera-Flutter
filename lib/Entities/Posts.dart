@@ -24,10 +24,6 @@ class Posts {
     return updatePosts(this);
   }
 
-  Future<Posts> delete() {
-    return deletePosts(this);
-  }
-
   //Statics
   static Future<Posts> create(Map<String, dynamic> user) {
     Posts nuevoPosts = new Posts(
@@ -76,6 +72,10 @@ class Posts {
     }
 
     return insertPosts(nuevoPosts);
+  }
+
+  static Future<bool> deletePost(String idPost) {
+    return deletePosts(idPost);
   }
 
   static Future<dynamic> allPosts([int pagina = 1, int lote = 5, Map<String, dynamic> filters]) {

@@ -156,6 +156,7 @@ class _MiListPostsState extends State<MiListPosts> {
                 child: MiCard(
                     key: Key("${document.data['idPost']}"),
                     idPost: "${document.data['idPost']}",
+                    uidUser: "${document.data['uidUser']}",
                     date: "${document.data['fecha']}",
                     width: 300.0,
                     content: Padding(

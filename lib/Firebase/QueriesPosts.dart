@@ -139,13 +139,15 @@ Future<Posts> updatePosts(Posts post) async {
   });
 }
 
-Future<Posts> deletePosts(Posts post) async {
+Future<bool> deletePosts(String idPost) async {
   return Firestore.instance
       .collection('posts')
-      .document(post.idPost)
+      .document(idPost)
       .delete()
       .then((result) {
-    return post;
+    return true;
+  }).catchError((onError){
+    return false;
   });
 }
 
