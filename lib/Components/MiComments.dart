@@ -52,26 +52,25 @@ class MiCommentsState extends State<MiComments> {
                           PostComments(idPost: widget.idPost)),
                 );
               }),
-          _cargando == true ?
-            Text('...')
-          : GestureDetector(
-            child: Text(
-                "${_cantComments} ${_cantComments == 1 ? 'Comentario' : 'Comentarios'}"),
-            onTap: () {
-               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          PostComments(idPost: widget.idPost)),
-                );
-            },
-          )
+          _cargando == true
+              ? Text('...')
+              : GestureDetector(
+                  child: Text(
+                      "${_cantComments} ${_cantComments == 1 ? 'Comentario' : 'Comentarios'}"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PostComments(idPost: widget.idPost)),
+                    );
+                  },
+                )
         ]));
   }
 
   void actualizarComments() {
     Comments.getPostComments(_idPost).then((comments) {
-
       setState(() {
         _cantComments = comments.length;
         _listaComments = comments;
@@ -96,6 +95,7 @@ class PostCommentsState extends State<PostComments> {
   var _user;
   String _idPost;
   bool _cargando = true;
+  int _cantComentarios = 0;
 
   bool _onLoad = true;
 
@@ -107,10 +107,20 @@ class PostCommentsState extends State<PostComments> {
     _idPost = widget.idPost;
     _user = store.state['loggedUser'];
 
-    Comments.onFireStoreChange().listen((data){
-      if(data.documents[0].data['uidUser'] == _user['uid'] || _onLoad) return false;
+    Comments.onFireStoreChange().listen((data) {
+      int cantComentarios = data.documents.length;
+
+      if ((data.documents[0].data['uidUser'] == _user['uid'] &&
+              cantComentarios >= _cantComentarios) ||
+          _onLoad) {
+        setState(() {
+          _cantComentarios = cantComentarios;
+        });
+        return false;
+      }
 
       setState(() {
+        _cantComentarios = cantComentarios;
         _cargando = true;
       });
       actualizarComments();
@@ -250,7 +260,9 @@ class ChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _imageAvatar = comment != null
-        ? (comment.user != null ? comment.user.photoUrl.toString() : _user['photoUrl'].toString())
+        ? (comment.user != null
+            ? comment.user.photoUrl.toString()
+            : _user['photoUrl'].toString())
         : 'https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png';
 
     return new Container(
@@ -277,14 +289,31 @@ class ChatMessage extends StatelessWidget {
                 new Row(
                   //crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    new Text(comment.user != null ? comment.user.displayName :  _user['displayName'],
+                    new Text(
+                        comment.user != null
+                            ? comment.user.displayName
+                            : _user['displayName'],
                         style: Theme.of(context).textTheme.subhead),
                     new Padding(
                         padding: EdgeInsets.only(left: 5.0),
                         child: new Text(
                           comment.fecha,
                           style: TextStyle(fontSize: 12.0, color: Colors.grey),
-                        ))
+                        )),
+                    comment.uidUser == _user['uid']
+                        ? GestureDetector(
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Icon(
+                                  Icons.delete,
+                                  size: 20.0,
+                                  color: Colors.grey,
+                                )),
+                            onTap: () {
+                              _deleteComment(context, comment.idComment);
+                            },
+                          )
+                        : Container()
                   ],
                 ),
                 new Container(
@@ -295,5 +324,64 @@ class ChatMessage extends StatelessWidget {
             )
           ],
         ));
+  }
+
+  void _deleteComment(BuildContext context, String idComment) async {
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Eliminación"),
+          content: new Text("¿Seguro que quiere eliminar el comentario?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            new FlatButton(
+              child: new Text("Si"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result) {
+      Comments.deleteComment(idComment).then((result) {
+        if (!result) {
+          _mensajeError(context);
+        }
+      });
+    }
+  }
+
+  void _mensajeError(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error"),
+          content:
+              new Text("Ocurrió un error al intentar eliminar el commentario."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

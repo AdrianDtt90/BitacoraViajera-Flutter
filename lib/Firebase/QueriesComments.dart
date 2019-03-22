@@ -67,13 +67,15 @@ Future<Comments> updateComments(Comments comment) async {
   });
 }
 
-Future<Comments> deleteComments(Comments comment) async {
+Future<bool> deleteComments(String idComment) async {
   return Firestore.instance
       .collection('comments')
-      .document(comment.idComment)
+      .document(idComment)
       .delete()
       .then((result) {
-    return comment;
+    return true;
+  }).catchError((onError){
+    return false;
   });
 }
 

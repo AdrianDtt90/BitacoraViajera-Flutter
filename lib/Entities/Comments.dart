@@ -22,10 +22,6 @@ class Comments {
     return updateComments(this);
   }
 
-  Future<Comments> delete () {
-    return deleteComments(this);
-  }
-
   //Statics
   static Future<Comments> create (Map<String,dynamic> user) {
     Comments nuevoComments = new Comments(user['idComment'],
@@ -35,6 +31,10 @@ class Comments {
     user['comment'],
     user['fecha']);
     return insertComments(nuevoComments);
+  }
+
+  static Future<bool> deleteComment(String idComment) {
+    return deleteComments(idComment);
   }
 
   static Future<Comments> getComment (String idComment) {
