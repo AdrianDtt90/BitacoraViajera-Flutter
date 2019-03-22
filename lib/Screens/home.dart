@@ -200,6 +200,8 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
+  String _user = store.state['loggedUser']['uid'];
+
   @override
   initState() {
     super.initState();
@@ -210,14 +212,14 @@ class _FirstScreenState extends State<FirstScreen> {
     return Scaffold(
         appBar: null,
         body: MiListPosts(),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: (_user == 'rRPOde1RJGRFfmfbr9C1td35r3S2' || _user == '9gw2PpIP6hVyOenRhk34g1m7GE03') ? FloatingActionButton(
           onPressed: () {
             _navigateToCreatePost(context);
           },
           tooltip: 'Increment Counter',
           child: Icon(Icons.add),
           elevation: 0.0,
-        ));
+        ) : Container());
   }
 
   _navigateToCreatePost(BuildContext context) async {
