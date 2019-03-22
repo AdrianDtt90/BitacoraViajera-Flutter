@@ -16,6 +16,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:sandbox_flutter/Entities/Posts.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
 
+import 'package:location/location.dart' as LocationManager;
+import 'package:latlong/latlong.dart';
+
 class MiInputPost extends StatefulWidget {
   MiInputPost({Key key}) : super(key: key);
 
@@ -29,15 +32,14 @@ class _MiInputPostState extends State<MiInputPost> {
   TextEditingController _controllerFecha = new TextEditingController();
   TextEditingController _controllerHora = new TextEditingController();
 
+  TextEditingController _controllerMyLocation = new TextEditingController();
+
   List<Map<String, dynamic>> _listaAdjuntos = new List();
   Map<String, dynamic> _mapa = null;
 
   dynamic _mensajeUploadPost = 'Cargando...';
 
   bool _uploadPost = false;
-
-  bool _errorPublicacion = false;
-  String _errorMensaje = 'Error al intentar publicar';
 
   @override
   void initState() {
@@ -236,6 +238,16 @@ class _MiInputPostState extends State<MiInputPost> {
                         },
                       ),
                       _mapa == null
+                          ? IconButton(
+                              //Camera
+                              icon: Icon(Icons.gps_fixed),
+                              color: Color.fromRGBO(3, 169, 244, 1),
+                              onPressed: () {
+                                _getMyCurrentLocation();
+                              },
+                            )
+                          : Container(),
+                      _mapa == null
                           ? Padding(
                               padding: EdgeInsets.only(bottom: 2.0),
                               child: IconButton(
@@ -267,7 +279,6 @@ class _MiInputPostState extends State<MiInputPost> {
                   )
                 ],
               ),
-              _errorPublicacion == true ? _neverSatisfied() : Container(),
               _uploadPost == true
                   ? Container(
                       child: SimpleDialog(
@@ -309,7 +320,8 @@ class _MiInputPostState extends State<MiInputPost> {
       "idPost": "idPost_${rnd.nextInt(100000000)}",
       "titulo": _controllerTitulo.text,
       "descripcion": _controllerDescripcion.text,
-      "timestamp": getDateFromString("${_controllerFecha.text}").millisecondsSinceEpoch,
+      "timestamp":
+          getDateFromString("${_controllerFecha.text}").millisecondsSinceEpoch,
       "fecha": "${_controllerFecha.text} ${_controllerHora.text}",
       "uidUser": store.state['loggedUser']['uid'],
       "nombreMapa": _mapa != null ? _mapa['text'] : null,
@@ -343,9 +355,8 @@ class _MiInputPostState extends State<MiInputPost> {
 
           updatePost(postData);
         }).catchError((e) {
+          _showError('Ocurrió un problema al intentar subir las fotos.');
           setState(() {
-            _errorPublicacion = true;
-            _errorMensaje = 'Ocurrió un problema al intentar subir las fotos.';
             _uploadPost = false;
           });
         });
@@ -369,9 +380,8 @@ class _MiInputPostState extends State<MiInputPost> {
 
       Navigator.pop(context, true);
     }).catchError((e) {
+      _showError('Ocurrió un problema al intentar publicar.');
       setState(() {
-        _errorPublicacion = true;
-        _errorMensaje = 'Ocurrió un problema al intentar publicar.';
         _uploadPost = false;
       });
     });
@@ -380,19 +390,13 @@ class _MiInputPostState extends State<MiInputPost> {
   bool validarPost(dynamic post) {
     //Validamos Titulo
     if (post['titulo'] == '') {
-      setState(() {
-        _errorPublicacion = true;
-        _errorMensaje = 'Debe ingresar un titulo.';
-      });
+      _showError('Debe ingresar un titulo.');
       return false;
     }
 
     //Validamos Descripción
     if (post['descripcion'] == '') {
-      setState(() {
-        _errorPublicacion = true;
-        _errorMensaje = 'Debe ingresar una descripción.';
-      });
+      _showError('Debe ingresar una descripción.');
       return false;
     }
 
@@ -404,37 +408,32 @@ class _MiInputPostState extends State<MiInputPost> {
     final difference = nowDate.difference(selectedDate).inMilliseconds;
 
     if (difference < 0) {
-      setState(() {
-        _errorPublicacion = true;
-        _errorMensaje = 'Debe ingresar una fecha igual o menor a la actual.';
-      });
+      _showError('Debe ingresar una fecha igual o menor a la actual.');
       return false;
     }
-
-    setState(() {
-      _errorPublicacion = false;
-    });
 
     return true;
   }
 
-  Widget _neverSatisfied() {
-    return SimpleDialog(
-      children: <Widget>[
-        SimpleDialogOption(
-          child: Text("${_errorMensaje}"),
-        ),
-        SimpleDialogOption(
-            onPressed: () {
-              setState(() {
-                _errorPublicacion = false;
-              });
-            },
-            child: Text(
-              "CERRAR",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )),
-      ],
+  void _showError(String _errorMensaje) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error"),
+          content: new Text("${_errorMensaje}"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -515,6 +514,87 @@ class _MiInputPostState extends State<MiInputPost> {
           "lon": result['lon']
         };
       });
+    }
+  }
+
+  //My Current Location
+  _getMyCurrentLocation() async {
+    bool result = await _showDialogMyLocation();
+
+    if (result) {
+      String ubicacion = _controllerMyLocation.text;
+      _controllerMyLocation.text = '';
+
+      LatLng mylocation = await _getUserLocation();
+
+      if (result == null || mylocation == null) {
+        //Se rechazó foto
+        setState(() {
+          _mapa = {"text": null, "lat": null, "lon": null};
+        });
+      } else {
+        //Se encontró Mapa
+        setState(() {
+          _mapa = {
+            "text": ubicacion,
+            "lat": mylocation.latitude,
+            "lon": mylocation.longitude
+          };
+        });
+      }
+    } else {
+      _showError('Ocurró un error al intenar ingresar la ubicación');
+      _controllerMyLocation.text = '';
+    }
+  }
+
+  Future<bool> _showDialogMyLocation() async {
+    // flutter defined function
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Agregando mi ubicación"),
+          content: new TextField(
+              controller: _controllerMyLocation,
+              maxLength: 25,
+              decoration: InputDecoration(
+                  hintText: "Ingrese la ubicación...", labelText: "Ubicación")),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            new FlatButton(
+              child: new Text("Aceptar"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    return result;
+  }
+
+  Future<LatLng> _getUserLocation() async {
+    var currentLocation = <String, double>{};
+    final location = LocationManager.Location();
+    try {
+      currentLocation = await location.getLocation();
+      final lat = currentLocation["latitude"];
+      final lng = currentLocation["longitude"];
+      final center = LatLng(lat, lng);
+      return center;
+    } on Exception {
+      currentLocation = null;
+      return null;
     }
   }
 
