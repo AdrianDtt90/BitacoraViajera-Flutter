@@ -196,7 +196,8 @@ class _SearchAddressState extends State<SearchAddress> {
 
     _controller.addListener(() {
 
-      if(_isButtonDisabled == true) {
+      try {
+        if(_isButtonDisabled == true) {
         //print(_controller.text);
         _amountText = _amountText + 1;
 
@@ -209,7 +210,8 @@ class _SearchAddressState extends State<SearchAddress> {
           }
           _amountText = 0;
         });
-      }
+      }        
+      } catch (e) {}
       
     });
   }

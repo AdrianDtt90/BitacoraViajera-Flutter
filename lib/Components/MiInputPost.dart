@@ -503,7 +503,7 @@ class _MiInputPostState extends State<MiInputPost> {
     if (result == null) {
       //Se rechazó foto
       setState(() {
-        _mapa = {"text": null, "lat": null, "lon": null};
+        _mapa = null;
       });
     } else {
       //Se encontró Mapa
@@ -530,7 +530,7 @@ class _MiInputPostState extends State<MiInputPost> {
       if (result == null || mylocation == null) {
         //Se rechazó foto
         setState(() {
-          _mapa = {"text": null, "lat": null, "lon": null};
+          _mapa = null;
         });
       } else {
         //Se encontró Mapa
