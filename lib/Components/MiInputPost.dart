@@ -593,9 +593,34 @@ class _MiInputPostState extends State<MiInputPost> {
       final center = LatLng(lat, lng);
       return center;
     } on Exception {
+      _showGPSDialog();
+      
       currentLocation = null;
       return null;
     }
+  }
+
+  Future<bool> _showGPSDialog() async {
+    // flutter defined function
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Agregando mi ubicación"),
+          content: Text("¡Debe encender el GPS!"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   //Agregar Imagen desde GALERIA
