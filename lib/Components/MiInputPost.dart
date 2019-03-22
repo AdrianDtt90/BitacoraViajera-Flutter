@@ -321,7 +321,7 @@ class _MiInputPostState extends State<MiInputPost> {
       "titulo": _controllerTitulo.text,
       "descripcion": _controllerDescripcion.text,
       "timestamp":
-          getDateFromString("${_controllerFecha.text}").millisecondsSinceEpoch,
+          getDateFromString("${_controllerFecha.text} ${_controllerHora.text}").millisecondsSinceEpoch,
       "fecha": "${_controllerFecha.text} ${_controllerHora.text}",
       "uidUser": store.state['loggedUser']['uid'],
       "nombreMapa": _mapa != null ? _mapa['text'] : null,

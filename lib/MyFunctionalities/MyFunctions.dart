@@ -1,7 +1,8 @@
 String formatStringDate (String date) {
-    String onlyDate = date.split(' ')[0];
+    String fecha = date.split(' ')[0];
+    String hora = date.split(' ')[1];
     
-    return onlyDate.split('/')[2]+'-'+onlyDate.split('/')[1]+'-'+onlyDate.split('/')[0];
+    return fecha.split('/')[2]+'-'+fecha.split('/')[1]+'-'+fecha.split('/')[0] + ' ' + hora.split(':')[0] + ':' + hora.split(':')[1] + ':00';
 }
 
 DateTime getDateFromString(String date) {

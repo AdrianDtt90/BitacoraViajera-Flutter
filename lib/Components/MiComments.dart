@@ -19,6 +19,9 @@ class MiComments extends StatefulWidget {
 class MiCommentsState extends State<MiComments> {
   var _user;
   String _idPost;
+  bool _cargando = true;
+  int _cantComments = 0;
+  List<Comments> _listaComments = new List();
 
   @override
   void initState() {
@@ -27,6 +30,10 @@ class MiCommentsState extends State<MiComments> {
 
     _idPost = widget.idPost;
     _user = store.state['loggedUser'];
+
+    Comments.onFireStoreChange().listen((data) {
+      actualizarComments();
+    });
   }
 
   @override
@@ -44,8 +51,33 @@ class MiCommentsState extends State<MiComments> {
                       builder: (context) =>
                           PostComments(idPost: widget.idPost)),
                 );
-              })
+              }),
+          _cargando == true ?
+            Text('...')
+          : GestureDetector(
+            child: Text(
+                "${_cantComments} ${_cantComments == 1 ? 'Comentario' : 'Comentarios'}"),
+            onTap: () {
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PostComments(idPost: widget.idPost)),
+                );
+            },
+          )
         ]));
+  }
+
+  void actualizarComments() {
+    Comments.getPostComments(_idPost).then((comments) {
+
+      setState(() {
+        _cantComments = comments.length;
+        _listaComments = comments;
+        _cargando = false;
+      });
+    });
   }
 }
 

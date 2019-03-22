@@ -37,7 +37,6 @@ class _MiLikesState extends State<MiLikes> {
 
   @override
   Widget build(BuildContext context) {
-    if (_cargando) return Text('...');
 
     return Container(
         margin: const EdgeInsets.only(right: 10.0),
@@ -70,7 +69,9 @@ class _MiLikesState extends State<MiLikes> {
               });
             },
           ),
-          GestureDetector(
+          _cargando == true ?
+            Text('...')
+          : GestureDetector(
             child: Text(
                 "${_cantLikes} Me ${_cantLikes == 1 ? 'Gusta' : 'Gustas'}"),
             onTap: () {
