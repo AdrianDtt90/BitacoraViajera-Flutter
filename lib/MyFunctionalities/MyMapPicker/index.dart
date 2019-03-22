@@ -195,18 +195,22 @@ class _SearchAddressState extends State<SearchAddress> {
     super.initState();
 
     _controller.addListener(() {
-      //print(_controller.text);
-      _amountText = _amountText + 1;
 
-      Timer(new Duration(seconds: 1), () {
-        if (_amountText >= 3) {
+      if(_isButtonDisabled == true) {
+        //print(_controller.text);
+        _amountText = _amountText + 1;
+
+        Timer(new Duration(seconds: 1), () {
+          if (_amountText >= 3) {
+            _amountText = 0;
+
+            //Consumimos API
+            getSugerencia(_controller.text);
+          }
           _amountText = 0;
-
-          //Consumimos API
-          getSugerencia(_controller.text);
-        }
-        _amountText = 0;
-      });
+        });
+      }
+      
     });
   }
 
