@@ -38,12 +38,15 @@ class _MiListPostsState extends State<MiListPosts> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(245, 245, 245, 1)
+      ),
         child: _listPost.length > 0
             ? Stack(children: <Widget>[
                 Container(
                   height: double.infinity,
-                  width: 1.0,
-                  color: Colors.black,
+                  width: 8.0,
+                  color: Colors.white,
                   margin: const EdgeInsets.only(left: 28.0, right: 28.0),
                 ),
                 ListView(children: <Widget>[
@@ -199,11 +202,13 @@ class _MiListPostsState extends State<MiListPosts> {
                               : Container()
                         ])))),
             Padding(
-                padding: EdgeInsets.only(top: 25.0),
+                padding: EdgeInsets.only(top: 25.0, left: 4.0),
                 child: Container(
                     width: 55,
                     height: 55,
                     decoration: new BoxDecoration(
+                      color: Colors.white,
+                      border: new Border.all(color: Colors.white, width: 4.0),
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.fill,

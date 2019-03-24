@@ -10,20 +10,16 @@ class MiLoading extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(
-                child: CircularProgressIndicator(),
-                height: 50.0,
-                width: 50.0,
-              )
+              Image.asset("assets/bolso.png")
             ]
           )
         ),
         children: <Widget>[
-          Text('Cargando...', textAlign: TextAlign.center)
+          Text('Cargando...', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),)
         ],
       ),
       decoration: new BoxDecoration(
-        color: const Color.fromRGBO(88, 183, 251, 0.8),
+        color: const Color.fromRGBO(72, 114, 155, 1),
       ),
     );
   }

@@ -37,7 +37,7 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
     } catch (e) {
       print(e);
     }
-    
+
     getCurrentUser().then((userId) {
       if (userId != null) {
         entrar();
@@ -51,6 +51,8 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
 
   void entrar() {
     _signIn(context).then((Map<String, dynamic> user) {
+      if(user == null) return false;
+
       user['notificationToken'] = token;
       widget.onLoggedInOk(user);
     }).catchError((e) => print(e));
@@ -59,7 +61,7 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Color.fromRGBO(0, 173, 255, 1),
+        color: Color.fromRGBO(72, 114, 155, 1),
         child: userLogged == true
             ? MiLoading()
             : Center(
@@ -67,35 +69,40 @@ class MyLoginGoogleFirebaseState extends State<MyLoginGoogleFirebase> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Icon(IconData(58730, fontFamily: 'MaterialIcons'),
-                      size: 100, color: Color.fromRGBO(255, 255, 255, 1)),
+                  Image.asset("assets/avion.png"),
                   Padding(
                       padding: EdgeInsets.only(top: 20.0),
-                      child: MaterialButton(
-                        minWidth: 150.0,
-                        onPressed: () => entrar(),
-                        child: Text('Iniciar Sesión',
-                            style: TextStyle(
-                                color: Color.fromRGBO(255, 255, 255, 1))),
-                        color: Colors.lightBlueAccent,
-                      ))
+                      child: FlatButton(
+                          onPressed: () => entrar(),
+                          child: Text('Iniciar Sesión',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(72, 114, 155, 1))),
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0))))
                 ],
               )));
   }
 
   Future<Map<String, dynamic>> _signIn(BuildContext context) async {
-    GoogleSignInAccount googleSignInAccount = await _gSignIn.signIn();
-    GoogleSignInAuthentication authentication =
-        await googleSignInAccount.authentication;
+    try {
+      GoogleSignInAccount googleSignInAccount = await _gSignIn.signIn();
+      if(googleSignInAccount == null) return null;
 
-    FirebaseUser user = await _fAuth.signInWithGoogle(
-        idToken: authentication.idToken,
-        accessToken: authentication.accessToken);
+      GoogleSignInAuthentication authentication =
+          await googleSignInAccount.authentication;
 
-    UserInfoDetails userInfo = new UserInfoDetails(
-        user.providerId, user.displayName, user.email, user.photoUrl, user.uid);
+      FirebaseUser user = await _fAuth.signInWithGoogle(
+          idToken: authentication.idToken,
+          accessToken: authentication.accessToken);
 
-    return userInfo.toJson();
+      UserInfoDetails userInfo = new UserInfoDetails(
+          user.providerId, user.displayName, user.email, user.photoUrl, user.uid);
+
+      return userInfo.toJson();
+    } catch (e) {
+      return {};
+    }
   }
 
   Future<String> getCurrentUser() async {

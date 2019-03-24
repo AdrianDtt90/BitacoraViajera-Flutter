@@ -49,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
       key: scaffoldState,
       appBar: AppBar(
         title: Text('Bitacora Viajera'),
+        backgroundColor: Color.fromRGBO(67, 170, 139, 1),
       ),
       body: ScreenRouter(value: _selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -158,6 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _signOut() async {
+    scaffoldState = null;
     _gSignIn.signOut();
     return _fAuth.signOut();
   }
@@ -213,11 +215,12 @@ class _FirstScreenState extends State<FirstScreen> {
         appBar: null,
         body: MiListPosts(),
         floatingActionButton: (_user == 'rRPOde1RJGRFfmfbr9C1td35r3S2' || _user == '9gw2PpIP6hVyOenRhk34g1m7GE03') ? FloatingActionButton(
+          backgroundColor: Color.fromRGBO(67, 170, 139, 1),
           onPressed: () {
             _navigateToCreatePost(context);
           },
           tooltip: 'Increment Counter',
-          child: Icon(Icons.add),
+          child: Icon(Icons.add_to_photos),
           elevation: 0.0,
         ) : Container());
   }
