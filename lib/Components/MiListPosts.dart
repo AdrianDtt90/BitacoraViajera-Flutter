@@ -21,7 +21,7 @@ class _MiListPostsState extends State<MiListPosts> {
   List<Widget> _listPost = new List();
   int lote = 5; //Definición por defecto
   bool _ultimosPost = false;
-  bool _cargandoSigPosts = false;
+  bool _cargandoSigPosts = true;
 
   @override
   initState() {
@@ -77,6 +77,11 @@ class _MiListPostsState extends State<MiListPosts> {
                       : Container()
                 ]),
               ])
+            : 
+            _cargandoSigPosts == false ?
+              Center(
+                child: Text("No hay publicaciones.")
+              )
             : Center(
                 child: SizedBox(
                   child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
@@ -169,7 +174,7 @@ class _MiListPostsState extends State<MiListPosts> {
                                 fontStyle: FontStyle.italic,
                                   fontWeight: FontWeight.bold, fontSize: 18.0)),
                           Padding(
-                              padding: EdgeInsets.only(bottom: 10.0),
+                              padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                               child: Text("${document.data['descripcion']}")),
                           adjuntosPost,
                           document.data['nombreMapa'] != null

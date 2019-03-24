@@ -405,7 +405,7 @@ class _FourthScreenState extends State<FourthScreen> {
             width: 50.0,
           )));
     }
-    return Container(child: _listaImages);
+    return ListView(children: <Widget>[_listaImages]);
   }
 
   dynamic getImagesViewer(List<Images> list) {
