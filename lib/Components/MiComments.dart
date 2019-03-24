@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sandbox_flutter/Entities/Users.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:sandbox_flutter/Entities/Comments.dart';
@@ -138,7 +139,8 @@ class PostCommentsState extends State<PostComments> {
       "uidUser": _user['uid'],
       "idPost": widget.idPost,
       "comment": text,
-      "fecha": getStringDateNow()
+      "fecha": getStringDateNow(),
+      "timestamp" : getDateFromString(getStringDateNow()).millisecondsSinceEpoch
     };
     Comments.create(comment).then((value) {
       ChatMessage message = new ChatMessage(comment: value);
@@ -149,7 +151,9 @@ class PostCommentsState extends State<PostComments> {
     });
   }
 
-  Widget _chatEnvironment() {
+  Widget _chatEnvironment(BuildContext context) {
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     return IconTheme(
       data: new IconThemeData(color: Color.fromRGBO(67, 170, 139, 1)),
       child: new Container(
@@ -193,6 +197,15 @@ class PostCommentsState extends State<PostComments> {
               )))
             : Column(
                 children: <Widget>[
+                  new Container(
+                    decoration: new BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                    ),
+                    child: _chatEnvironment(context),
+                  ),
+                  new Divider(
+                    height: 1.0,
+                  ),
                   _messages.length == 0
                       ? Padding(
                           padding: EdgeInsets.only(top: 20.0),
@@ -207,15 +220,6 @@ class PostCommentsState extends State<PostComments> {
                       itemCount: _messages.length,
                     ),
                   ),
-                  new Divider(
-                    height: 1.0,
-                  ),
-                  new Container(
-                    decoration: new BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                    ),
-                    child: _chatEnvironment(),
-                  )
                 ],
               ));
   }

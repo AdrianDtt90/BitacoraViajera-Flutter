@@ -43,6 +43,8 @@ Future<List<Comments>> getCommentsByIdPost(String idPost) async {
       listaComments.add(comment);
     }
 
+    listaComments.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
     return listaComments;
   });
 }
