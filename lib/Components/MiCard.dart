@@ -13,7 +13,14 @@ class MiCard extends StatefulWidget {
   final double height;
   final dynamic content;
 
-  MiCard({Key key, this.idPost,this.uidUser, this.date, this.width, this.height, this.content})
+  MiCard(
+      {Key key,
+      this.idPost,
+      this.uidUser,
+      this.date,
+      this.width,
+      this.height,
+      this.content})
       : super(key: key);
 
   @override
@@ -32,21 +39,25 @@ class _MiCardState extends State<MiCard> {
         margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
         child: Column(
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Text(
-                widget.date,
-                textAlign: TextAlign.right,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
             SizedBox(
                 width: double.infinity,
                 height: widget.height,
                 child: Card(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[Container(child: widget.content)],
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 4.0, right: 4.0),
+                        child:Container(
+                        width: double.infinity,
+                        child: Text(
+                          widget.date,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )),
+                      Container(child: widget.content)
+                    ],
                   ),
                 )),
             Container(
@@ -55,12 +66,17 @@ class _MiCardState extends State<MiCard> {
                   children: <Widget>[
                     MiLikes(idPost: widget.idPost),
                     MiComments(idPost: widget.idPost),
-                    widget.uidUser == _user ? GestureDetector(
-                      child: Icon(Icons.delete, color: Colors.grey,),
-                      onTap: () {
-                        _deletePost(widget.idPost);
-                      },
-                    ) : Container()
+                    widget.uidUser == _user
+                        ? GestureDetector(
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.grey,
+                            ),
+                            onTap: () {
+                              _deletePost(widget.idPost);
+                            },
+                          )
+                        : Container()
                   ],
                 ))
           ],
@@ -94,9 +110,9 @@ class _MiCardState extends State<MiCard> {
       },
     );
 
-    if(result) {
-      Posts.deletePost(idPost).then((result){
-        if(!result) {
+    if (result) {
+      Posts.deletePost(idPost).then((result) {
+        if (!result) {
           _mensajeError();
         }
       });

@@ -43,7 +43,7 @@ class _MiImageState extends State<MiImage> {
             ? Text("${widget.linkTexto}",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(18, 142, 249, 1)))
+                    color: Color.fromRGBO(67, 170, 139, 1)))
             : getImageWidget(widget.currentUrl, widget.fileType));
   }
 
@@ -54,12 +54,14 @@ class _MiImageState extends State<MiImage> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
-            Image.network(url)
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(url))
           ],
         );
       case 1:
@@ -67,12 +69,14 @@ class _MiImageState extends State<MiImage> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
-            Image.file(File(url))
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.file(File(url)))
           ],
         );
       case 2:
@@ -80,12 +84,14 @@ class _MiImageState extends State<MiImage> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
-            Image.asset(url)
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.asset(url))
           ],
         );
       default:
@@ -153,8 +159,7 @@ class ImageViewer extends StatelessWidget {
       }
     });
 
-    if(srcActual != null)
-      listaImagenes.insert(0, srcActual);
+    if (srcActual != null) listaImagenes.insert(0, srcActual);
     //////////////////////////////////////////////////////
 
     listaImagenes.forEach((image) {

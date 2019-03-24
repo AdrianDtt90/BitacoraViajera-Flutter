@@ -103,17 +103,17 @@ class _MiInputPostState extends State<MiInputPost> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     top: BorderSide(
-                                      color: Color.fromRGBO(18, 142, 249, 1),
+                                      color: Color.fromRGBO(67, 170, 139, 1),
                                     ),
                                     bottom: BorderSide(
-                                      color: Color.fromRGBO(18, 142, 249, 1),
+                                      color: Color.fromRGBO(67, 170, 139, 1),
                                     ))),
                             child: Text(
                               'Crear Publicación',
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 20,
-                                color: Color.fromRGBO(18, 142, 249, 1),
+                                color: Color.fromRGBO(67, 170, 139, 1),
                               ),
                             ),
                           ))
@@ -265,7 +265,7 @@ class _MiInputPostState extends State<MiInputPost> {
                               child: Padding(
                                 padding: EdgeInsets.only(right: 10.0),
                                 child: FlatButton(
-                                  color: Color.fromRGBO(19, 137, 253, 1),
+                                  color: Color.fromRGBO(67, 170, 139, 1),
                                   child: Text(
                                     "PUBLICAR",
                                     style: TextStyle(color: Colors.white),
@@ -287,7 +287,7 @@ class _MiInputPostState extends State<MiInputPost> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                               SizedBox(
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                                 height: 50.0,
                                 width: 50.0,
                               )
@@ -298,7 +298,7 @@ class _MiInputPostState extends State<MiInputPost> {
                         ],
                       ),
                       decoration: new BoxDecoration(
-                        color: const Color.fromRGBO(88, 183, 251, 0.8),
+                        color: const Color.fromRGBO(67, 170, 139, 0.8),
                       ),
                     )
                   : Container()
@@ -639,7 +639,7 @@ class _MiInputPostState extends State<MiInputPost> {
           maxWidth: 512,
           maxHeight: 512,
           toolbarTitle: "Editar Imagen",
-          toolbarColor: Color.fromRGBO(19, 137, 253, 1));
+          toolbarColor: Color.fromRGBO(67, 170, 139, 1));
 
       if (croppedImage == null) return false;
 

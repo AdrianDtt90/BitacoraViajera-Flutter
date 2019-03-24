@@ -151,7 +151,7 @@ class PostCommentsState extends State<PostComments> {
 
   Widget _chatEnvironment() {
     return IconTheme(
-      data: new IconThemeData(color: Colors.blue),
+      data: new IconThemeData(color: Color.fromRGBO(67, 170, 139, 1)),
       child: new Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: new Row(
@@ -187,7 +187,7 @@ class PostCommentsState extends State<PostComments> {
             ? Center(
                 child: Container(
                     child: SizedBox(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                 height: 50.0,
                 width: 50.0,
               )))

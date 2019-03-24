@@ -56,7 +56,7 @@ class _MiListPostsState extends State<MiListPosts> {
                   _cargandoSigPosts == true
                       ? Center(
                           child: SizedBox(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                             height: 20.0,
                             width: 20.0,
                           ),
@@ -65,8 +65,8 @@ class _MiListPostsState extends State<MiListPosts> {
                   _ultimosPost == false && _cargandoSigPosts == false
                       ? Padding(
                           padding: EdgeInsets.only(left: 65.0, right: 5.0),
-                          child: RaisedButton(
-                            child: Text("Ver más..."),
+                          child: FlatButton(
+                            child: Text("VER MÁS...", style: TextStyle(color: Color.fromRGBO(67, 170, 139, 1)),),
                             onPressed: () {
                               setState(() {
                                 _cargandoSigPosts = true;
@@ -79,7 +79,7 @@ class _MiListPostsState extends State<MiListPosts> {
               ])
             : Center(
                 child: SizedBox(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                   height: 50.0,
                   width: 50.0,
                 ),
@@ -162,11 +162,11 @@ class _MiListPostsState extends State<MiListPosts> {
                     uidUser: "${document.data['uidUser']}",
                     date: "${document.data['fecha']}",
                     width: 300.0,
-                    content: Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                        child: Column(children: <Widget>[
+                    content: Column(children: <Widget>[
                           Text("${document.data['titulo']}",
                               style: TextStyle(
+                                color: Color.fromRGBO(67, 170, 139, 1),
+                                fontStyle: FontStyle.italic,
                                   fontWeight: FontWeight.bold, fontSize: 18.0)),
                           Padding(
                               padding: EdgeInsets.only(bottom: 10.0),
@@ -200,9 +200,9 @@ class _MiListPostsState extends State<MiListPosts> {
                                     ]),
                                   ))
                               : Container()
-                        ])))),
+                        ]))),
             Padding(
-                padding: EdgeInsets.only(top: 25.0, left: 4.0),
+                padding: EdgeInsets.only(top: 8.0, left: 4.0),
                 child: Container(
                     width: 55,
                     height: 55,

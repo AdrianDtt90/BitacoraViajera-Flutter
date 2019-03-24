@@ -92,7 +92,7 @@
 //             crossAxisAlignment: CrossAxisAlignment.center,
 //             children: <Widget>[
 //               SizedBox(
-//                 child: CircularProgressIndicator(),
+//                 child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
 //                 height: 50.0,
 //                 width: 50.0,
 //               )
@@ -227,7 +227,7 @@
 //       children: <Widget>[
 //         IconButton(
 //           icon: const Icon(Icons.camera_alt),
-//           color: Colors.blue,
+//           color: Color.fromRGBO(67, 170, 139, 1),
 //           onPressed: controller != null &&
 //                   controller.value.isInitialized &&
 //                   !controller.value.isRecordingVideo
@@ -236,7 +236,7 @@
 //         ),
 //         IconButton(
 //           icon: const Icon(Icons.videocam),
-//           color: Colors.blue,
+//           color: Color.fromRGBO(67, 170, 139, 1),
 //           onPressed: controller != null &&
 //                   controller.value.isInitialized &&
 //                   !controller.value.isRecordingVideo

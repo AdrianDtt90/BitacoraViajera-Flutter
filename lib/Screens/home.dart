@@ -55,6 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+              activeIcon:
+                  Icon(Icons.home, color: Color.fromRGBO(67, 170, 139, 1)),
               icon: Icon(
                 Icons.home,
                 color: Colors.grey,
@@ -64,6 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(color: Colors.grey),
               )),
           BottomNavigationBarItem(
+              activeIcon: Icon(Icons.calendar_today,
+                  color: Color.fromRGBO(67, 170, 139, 1)),
               icon: Icon(
                 Icons.calendar_today,
                 color: Colors.grey,
@@ -73,6 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(color: Colors.grey),
               )),
           BottomNavigationBarItem(
+              activeIcon:
+                  Icon(Icons.map, color: Color.fromRGBO(67, 170, 139, 1)),
               icon: Icon(
                 Icons.map,
                 color: Colors.grey,
@@ -82,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(color: Colors.grey),
               )),
           BottomNavigationBarItem(
+              activeIcon:
+                  Icon(Icons.image, color: Color.fromRGBO(67, 170, 139, 1)),
               icon: Icon(
                 Icons.image,
                 color: Colors.grey,
@@ -92,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
         ],
         currentIndex: _selectedIndex,
-        fixedColor: Colors.blue,
+        fixedColor: Color.fromRGBO(67, 170, 139, 1),
         onTap: _onItemTapped,
       ),
       drawer: Drawer(
@@ -117,34 +125,34 @@ class _MyHomePageState extends State<MyHomePage> {
                                     "${loggedUser['photoUrl']}")))),
                     Container(
                         margin: const EdgeInsets.only(top: 10.0),
-                        child: Text('Bienvenido ${loggedUser['displayName']}',
+                        child: Text('${loggedUser['displayName']}',
                             style: TextStyle(
                                 color: Color.fromRGBO(255, 255, 255, 1))))
                   ]);
                 },
               ),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Color.fromRGBO(67, 170, 139, 1),
               ),
             ),
-            ListTile(
-              title: Text('Item 1'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Item1Screen()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Item 2'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Item2Screen()),
-                );
-              },
-            ),
+            // ListTile(
+            //   title: Text('Item 1'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => Item1Screen()),
+            //     );
+            //   },
+            // ),
+            // ListTile(
+            //   title: Text('Item 2'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => Item2Screen()),
+            //     );
+            //   },
+            // ),
             ListTile(
               title: Text('Cerrar Sesión'),
               onTap: () {
@@ -214,15 +222,18 @@ class _FirstScreenState extends State<FirstScreen> {
     return Scaffold(
         appBar: null,
         body: MiListPosts(),
-        floatingActionButton: (_user == 'rRPOde1RJGRFfmfbr9C1td35r3S2' || _user == '9gw2PpIP6hVyOenRhk34g1m7GE03') ? FloatingActionButton(
-          backgroundColor: Color.fromRGBO(67, 170, 139, 1),
-          onPressed: () {
-            _navigateToCreatePost(context);
-          },
-          tooltip: 'Increment Counter',
-          child: Icon(Icons.add_to_photos),
-          elevation: 0.0,
-        ) : Container());
+        floatingActionButton: (_user == 'rRPOde1RJGRFfmfbr9C1td35r3S2' ||
+                _user == '9gw2PpIP6hVyOenRhk34g1m7GE03')
+            ? FloatingActionButton(
+                backgroundColor: Color.fromRGBO(67, 170, 139, 1),
+                onPressed: () {
+                  _navigateToCreatePost(context);
+                },
+                tooltip: 'Increment Counter',
+                child: Icon(Icons.add_to_photos),
+                elevation: 0.0,
+              )
+            : Container());
   }
 
   _navigateToCreatePost(BuildContext context) async {
@@ -266,15 +277,15 @@ class _SecondScreenState extends State<SecondScreen> {
               thisMonthDayBorderColor: Colors.grey,
               selectedDateTime: _currentDate,
               daysHaveCircularBorder: true,
-              daysTextStyle: TextStyle(color: Colors.blue),
+              daysTextStyle: TextStyle(color: Color.fromRGBO(67, 170, 139, 1)),
               weekendTextStyle: TextStyle(
-                color: Colors.blue,
+                color: Color.fromRGBO(67, 170, 139, 1),
               ),
               weekdayTextStyle: TextStyle(
-                color: Colors.blue,
+                color: Color.fromRGBO(67, 170, 139, 1),
               ),
-              selectedDayButtonColor: Colors.lightBlue,
-              selectedDayBorderColor: Colors.blue,
+              selectedDayButtonColor: Color.fromRGBO(67, 170, 139, 1),
+              selectedDayBorderColor: Color.fromRGBO(67, 170, 139, 1),
               onDayPressed: (DateTime date, List<dynamic> list) {
                 postDelMesAno(date);
               },
@@ -297,7 +308,7 @@ class _SecondScreenState extends State<SecondScreen> {
                     BoxDecoration(color: Color.fromRGBO(232, 232, 232, 0.6)),
                 child: Center(
                     child: SizedBox(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
                   height: 50.0,
                   width: 50.0,
                 )))
@@ -389,7 +400,7 @@ class _FourthScreenState extends State<FourthScreen> {
           decoration: BoxDecoration(color: Color.fromRGBO(232, 232, 232, 0.6)),
           child: Center(
               child: SizedBox(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
             height: 50.0,
             width: 50.0,
           )));

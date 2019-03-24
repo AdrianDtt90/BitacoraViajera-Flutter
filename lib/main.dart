@@ -27,6 +27,10 @@ void main() {
         store: store,
         child: MaterialApp(
             title: 'Bitacora Viajera',
+            theme: ThemeData(
+              primaryColor: Color.fromRGBO(67, 170, 139, 1),
+            ),
+            debugShowCheckedModeBanner: false,
             // Start the app with the "/" named route. In our case, the app will start
             // on the FirstScreen Widget
             home: Stack(children: <Widget>[

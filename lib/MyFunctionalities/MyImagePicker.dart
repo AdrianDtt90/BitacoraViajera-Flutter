@@ -22,7 +22,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
       maxWidth: 512,
       maxHeight: 512,
       toolbarTitle: "Editar Imagen",
-      toolbarColor: Color.fromRGBO(19, 137, 253, 1)
+      toolbarColor: Color.fromRGBO(67, 170, 139, 1)
     );
 
     setState(() {
@@ -60,6 +60,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
                   onPressed: getImage,
                   tooltip: 'Tomar Foto',
                   child: Icon(Icons.add_a_photo),
+                  backgroundColor: Color.fromRGBO(67, 170, 139, 1),
                 ),
               )
             : Center(
