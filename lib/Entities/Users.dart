@@ -27,6 +27,10 @@ class Users {
     return getUsers();
   }
 
+  static Future<dynamic> getOther () {
+    return getOtherUsers();
+  }
+
   static Future<dynamic> getUser (String idUser) {
     return getUsersById(idUser);
   }

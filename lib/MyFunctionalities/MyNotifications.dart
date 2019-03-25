@@ -5,40 +5,45 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:sandbox_flutter/Entities/Users.dart';
 
 class NotificationSender {
-
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 
   static Future<http.Response> fetchNotification(String title, String body) {
-    Map<String, String> userHeader = {'Authorization':
+    Map<String, String> userHeader = {
+      'Authorization':
           'key=AAAArSM6NeE:APA91bFjlUNKt7peO2SXXKjF1rB4g-clSTS-dK2g2zdUZk61a8eyQd2xhHthABYWNnWeAv4ajjG94KI_NPixwQXIJQ6Gdd0cmYAla4MpD7sazXleVW-4kLpK98yN69kMko13RXG9vJ5M',
-      'Content-Type': 'application/json'};
+      'Content-Type': 'application/json'
+    };
 
-    String data = json.encode( {
-      "to" : "dORNBLE8QDY:APA91bHMXBorfBlyxPH-L1F_PkvPvMykRSRZ-fL0wl1OoiwbICZaMDUVRhFp8QtD0VaxjO8fveSEi9x5t0zqHO3zVk6_M9rhKGCQSIX4P7wKZC6mMaK74XHArftSTgbWIrKhtHgV0BeU",
-      "collapse_key" : "type_a",
-      "notification" : {
-          "body" : body,
-          "title": title
+    Users.getOther().then((listUsers) {
+
+      for (Users user in listUsers) {
+        String data = json.encode({
+          "to": user.notificationToken,
+          "collapse_key": "type_a",
+          "notification": {"body": body, "title": title}
+        });
+
+        http
+            .post('https://fcm.googleapis.com/fcm/send',
+                body: data, headers: userHeader)
+            .then((response) {
+          if (response.statusCode == 200) {
+            print("Number of books about http lala.");
+          } else {
+            print("Request failed with status: ${response.statusCode}.");
+          }
+        });
       }
-    });
 
-
-    http.post('https://fcm.googleapis.com/fcm/send', body: data, headers: userHeader).then((response) {
-      if (response.statusCode == 200) {
-        print("Number of books about http lala.");
-      } else {
-        print("Request failed with status: ${response.statusCode}.");
-      }
     });
   }
 }
 
-
 //Widget Listener
 class Notifications extends StatefulWidget {
-
   @override
   _NotificationsState createState() => _NotificationsState();
 }
@@ -90,4 +95,3 @@ class _NotificationsState extends State<Notifications> {
     });
   }
 }
-

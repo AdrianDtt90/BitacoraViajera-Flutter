@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:sandbox_flutter/Entities/Users.dart';
+import 'package:sandbox_flutter/Redux/index.dart';
 
 Future<dynamic> getUsers() async {
   return Firestore.instance.collection('users').getDocuments();
@@ -12,6 +13,25 @@ Future<dynamic> getUsers() async {
   //       document.data['apellido'];
   //   });
   // });
+}
+
+Future<dynamic> getOtherUsers() async {
+  var result = Firestore.instance.collection('users').getDocuments();
+
+  return result.then((result) async {
+    List<Users> listUser = new List();
+
+    for(var document in result.documents) {
+        var idUser = store.state['loggedUser']['uid'];
+
+        if(document.data['uid'] != idUser ) {
+          Users user = await Users.create(document.data);
+          listUser.add(user);
+        }
+    }
+
+    return listUser;
+  });
 }
 
 Future<Users> getUsersById(String idUsers) async {

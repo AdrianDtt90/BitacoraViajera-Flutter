@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import 'package:sandbox_flutter/Entities/Posts.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyNotifications.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
 
 import 'package:location/location.dart' as LocationManager;
@@ -374,11 +375,15 @@ class _MiInputPostState extends State<MiInputPost> {
 
     //Publicamos
     Posts.create(postData).then((post) {
-      setState(() {
-        _uploadPost = false;
+
+      NotificationSender.fetchNotification('Nuevo: ' + post.titulo, post.descripcion).then((result) {
+        setState(() {
+          _uploadPost = false;
+        });
+
+        Navigator.pop(context, true);
       });
 
-      Navigator.pop(context, true);
     }).catchError((e) {
       _showError('Ocurrió un problema al intentar publicar.');
       setState(() {
