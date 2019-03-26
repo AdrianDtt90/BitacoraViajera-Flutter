@@ -172,11 +172,13 @@ class _MiListPostsState extends State<MiListPosts> {
                     date: "${document.data['fecha']}",
                     width: 300.0,
                     content: Column(children: <Widget>[
-                          Text("${document.data['titulo']}",
+                          Padding(
+                              padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                              child: Text("${document.data['titulo']}",
                               style: TextStyle(
                                 color: Color.fromRGBO(67, 170, 139, 1),
                                 fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.bold, fontSize: 18.0)),
+                                  fontWeight: FontWeight.bold, fontSize: 18.0))),
                           Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                               child: Text("${document.data['descripcion']}")),
