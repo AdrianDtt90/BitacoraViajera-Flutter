@@ -162,6 +162,20 @@ class PostCommentsState extends State<PostComments> {
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: new Row(
           children: <Widget>[
+            new IconButton(
+              padding: EdgeInsets.all(0.0),
+              icon: new Icon(Icons.gif),
+              onPressed: () {
+                _enviarGif('gifs');
+              },
+            ),
+            new IconButton(
+              padding: EdgeInsets.only(right: 10.0),
+              icon: new Icon(Icons.face),
+              onPressed: () {
+                _enviarGif('stickers');
+              },
+            ),
             new Flexible(
               child: new TextField(
                 decoration:
@@ -177,15 +191,6 @@ class PostCommentsState extends State<PostComments> {
                 onPressed: () => _handleSubmit(_chatController.text),
               ),
             ),
-            new Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
-                icon: new Icon(Icons.gif),
-                onPressed: () {
-                  _enviarGif();
-                },
-              ),
-            )
           ],
         ),
       ),
@@ -238,37 +243,38 @@ class PostCommentsState extends State<PostComments> {
               ));
   }
 
-  void _enviarGif() async {
+  void _enviarGif(String tipo) async {
     final resultUrlGif = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MiGiphy()),
+      MaterialPageRoute(
+          builder: (context) => MiGiphy(
+                tipo: tipo,
+              )),
     );
 
-    // if (resultUrlGif != null) {
-    //   try {
-    //     Random rnd = new Random();
-    //     Map<String, dynamic> comment = {
-    //       "idComment": "idComment_${rnd.nextInt(100000000)}",
-    //       "uidUser": _user['uid'],
-    //       "idPost": widget.idPost,
-    //       "urlGif": resultUrlGif,
-    //       "fecha": getStringDateNow(),
-    //       "timestamp":
-    //           getDateFromString(getStringDateNow()).millisecondsSinceEpoch
-    //     };
-    //     Comments.create(comment).then((value) {
-    //       ChatMessage message = new ChatMessage(comment: value);
+    if (resultUrlGif != null) {
+      try {
+        Random rnd = new Random();
+        Map<String, dynamic> comment = {
+          "idComment": "idComment_${rnd.nextInt(100000000)}",
+          "uidUser": _user['uid'],
+          "idPost": widget.idPost,
+          "urlGif": resultUrlGif,
+          "fecha": getStringDateNow(),
+          "timestamp":
+              getDateFromString(getStringDateNow()).millisecondsSinceEpoch
+        };
+        Comments.create(comment).then((value) {
+          ChatMessage message = new ChatMessage(comment: value);
 
-    //       setState(() {
-    //         _messages.insert(0, message);
-    //       });
-    //     });
-    //   } catch (e) {
-    //     errorGif();
-    //   }
-    // } else {
-    //   errorGif();
-    // }
+          setState(() {
+            _messages.insert(0, message);
+          });
+        });
+      } catch (e) {
+        errorGif();
+      }
+    }
   }
 
   void errorGif() {
@@ -396,8 +402,7 @@ class ChatMessage extends StatelessWidget {
                           width: MediaQuery.of(context).size.width - 100,
                           height: 100,
                           child: MiImage(
-                              currentUrl:
-                                  comment.urlGif,
+                              currentUrl: comment.urlGif,
                               fileType: 0,
                               listImages: []))
                       : new Text(comment.comment),

@@ -26,6 +26,8 @@ class MiImage extends StatefulWidget {
 }
 
 class _MiImageState extends State<MiImage> {
+  bool _loadingFinished = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -50,57 +52,84 @@ class _MiImageState extends State<MiImage> {
   Widget getImageWidget(String url, int fileType) {
     switch (fileType) {
       case 0:
+        var imageSrc = Image.network(url);
+        imageSrc.image.resolve(new ImageConfiguration()).addListener((_, __) {
+          if (mounted) {
+            setState(() {
+              _loadingFinished = true;
+            });
+          }
+        });
+        
         return Stack(
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(
+                child: _loadingFinished == false ? CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(
                       Color.fromRGBO(67, 170, 139, 1)),
-                ),
+                ) : Container(),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Center(child: Image.network(url)))
+                child: Center(child: imageSrc))
           ],
         );
       case 1:
+        var imageSrc = Image.file(File(url));
+        imageSrc.image.resolve(new ImageConfiguration()).addListener((_, __) {
+          if (mounted) {
+            setState(() {
+              _loadingFinished = true;
+            });
+          }
+        });
+
         return Stack(
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(
+                child: _loadingFinished == false ? CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(
                       Color.fromRGBO(67, 170, 139, 1)),
-                ),
+                ) : Container(),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Image.file(File(url)))
+                child: imageSrc)
           ],
         );
       case 2:
+        var imageSrc = Image.asset(url);
+        imageSrc.image.resolve(new ImageConfiguration()).addListener((_, __) {
+          if (mounted) {
+            setState(() {
+              _loadingFinished = true;
+            });
+          }
+        });
+
         return Stack(
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(
+                child: _loadingFinished == false ? CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(
                       Color.fromRGBO(67, 170, 139, 1)),
-                ),
+                ) : Container(),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset(url))
+                child: imageSrc)
           ],
         );
       default:

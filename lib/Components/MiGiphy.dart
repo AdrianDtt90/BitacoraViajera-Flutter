@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:sandbox_flutter/Components/MiImage.dart';
 
 class MiGiphy extends StatefulWidget {
-  List<Map<String, dynamic>> markers;
+  String tipo;
 
-  MiGiphy({Key key, this.markers}) : super(key: key);
+  MiGiphy({Key key, this.tipo: 'gifs'}) : super(key: key);
 
   @override
   State<MiGiphy> createState() => MiGiphyState();
@@ -67,7 +67,7 @@ class MiGiphyState extends State<MiGiphy> {
                                         color: Colors.grey,
                                         onPressed: () {
                                           _searchController.text = '';
-                                          
+
                                           setState(() {
                                             _searching = false;
                                             _listaGif = new List();
@@ -160,7 +160,7 @@ class MiGiphyState extends State<MiGiphy> {
 
   void getGif() {
     var search = http.get(
-        'http://api.giphy.com/v1/gifs/trending?api_key=oDF2CBuue3FPXVA2FWV1vleT5kHPM122&limit=${_limit}&lang=es&offset=${_offset}');
+        'http://api.giphy.com/v1/${widget.tipo}/trending?api_key=oDF2CBuue3FPXVA2FWV1vleT5kHPM122&limit=${_limit}&lang=es&offset=${_offset}');
 
     if (_searchController.text != '') {
       var textSearch = _searchController.text
@@ -168,7 +168,7 @@ class MiGiphyState extends State<MiGiphy> {
           .replaceAll(new RegExp(r' '), '+');
 
       search = http.get(
-          'http://api.giphy.com/v1/gifs/search?q=${textSearch}&api_key=oDF2CBuue3FPXVA2FWV1vleT5kHPM122&limit=${_limit}&lang=es&offset=${_offset}');
+          'http://api.giphy.com/v1/${widget.tipo}/search?q=${textSearch}&api_key=oDF2CBuue3FPXVA2FWV1vleT5kHPM122&limit=${_limit}&lang=es&offset=${_offset}');
     }
 
     search.then((response) {
@@ -179,9 +179,31 @@ class MiGiphyState extends State<MiGiphy> {
           List<Widget> listaGif = new List();
 
           valueMap['data'].forEach((gif) {
-            String url = gif['images']['preview_gif']['url'];
-            listaGif.add(Center(
-                child: MiImage(currentUrl: url, fileType: 0, listImages: [])));
+            String shortGifUrl = gif['images']['preview_gif']['url'];
+            String largeGifUrl = gif['images']['fixed_height']['url'];
+            listaGif.add(GestureDetector(
+              child: Center(
+                  child: Stack(
+                children: <Widget>[
+                  Center(
+                    child: SizedBox(
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            Color.fromRGBO(67, 170, 139, 1)),
+                      ),
+                      height: 30.0,
+                      width: 30.0,
+                    ),
+                  ),
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Center(child: Image.network(shortGifUrl)))
+                ],
+              )),
+              onTap: () {
+                Navigator.of(context).pop(largeGifUrl);
+              },
+            ));
           });
 
           List<Widget> oldList = _listaGif;
