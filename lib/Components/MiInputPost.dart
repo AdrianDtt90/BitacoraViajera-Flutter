@@ -314,11 +314,10 @@ class _MiInputPostState extends State<MiInputPost> {
   void _publicarPost(BuildContext context) {
     FocusScope.of(context).requestFocus(new FocusNode());
 
-    Random rnd = new Random();
     List<String> listaAdjuntos = new List();
 
     var postData = {
-      "idPost": "idPost_${rnd.nextInt(100000000)}",
+      "idPost": "idPost_${new DateTime.now().millisecondsSinceEpoch}",
       "titulo": _controllerTitulo.text,
       "descripcion": _controllerDescripcion.text,
       "timestamp":

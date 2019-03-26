@@ -41,11 +41,10 @@ class Posts {
     //Guardamos adjuntos
     if (user['adjuntos'] != null && user['adjuntos'].length > 0) {
       user['adjuntos'].forEach((urlImg) async {
-        Random rnd = new Random();
 
         try {
           await Images.create({
-            "idImage": "idImage_${rnd.nextInt(100000000)}",
+            "idImage": "idImage_${new DateTime.now().millisecondsSinceEpoch}",
             "uidUser": user['uidUser'],
             "src": urlImg
           });
@@ -57,11 +56,11 @@ class Posts {
     if (user['nombreMapa'] != null &&
         user['latitud'] != null &&
         user['longitud'] != null) {
-      Random rnd = new Random();
+      
       () async {
         try {
           await Maps.create({
-            "idMap": "idMap_${rnd.nextInt(100000000)}",
+            "idMap": "idMap_${new DateTime.now().millisecondsSinceEpoch}",
             "uidUser": user['uidUser'],
             "text": user['nombreMapa'],
             "lat": user['latitud'],

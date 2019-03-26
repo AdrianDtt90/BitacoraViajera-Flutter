@@ -50,10 +50,9 @@ class _MiLikesState extends State<MiLikes> {
                   actualizarLikes();
                 });
               } else {
-                Random rnd = new Random();
-
+                
                 Map<String, dynamic> like = {
-                  "idLike": "idLike_${rnd.nextInt(100000000)}",
+                  "idLike": "idLike_${new DateTime.now().millisecondsSinceEpoch}",
                   "uidUser": _user['uid'],
                   "idPost": widget.idPost,
                 };

@@ -92,6 +92,10 @@ class _MiListPostsState extends State<MiListPosts> {
   }
 
   _actualizarPublicaciones() {
+    setState(() {
+      _cargandoSigPosts = true;
+    });
+
     var service;
     
     //Por defecto paginacion (lote) de 5

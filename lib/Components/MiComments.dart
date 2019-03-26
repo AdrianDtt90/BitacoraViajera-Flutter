@@ -135,9 +135,8 @@ class PostCommentsState extends State<PostComments> {
   void _handleSubmit(String text) {
     _chatController.clear();
 
-    Random rnd = new Random();
     Map<String, dynamic> comment = {
-      "idComment": "idComment_${rnd.nextInt(100000000)}",
+      "idComment": "idComment_${new DateTime.now().millisecondsSinceEpoch}",
       "uidUser": _user['uid'],
       "idPost": widget.idPost,
       "comment": text,
@@ -254,9 +253,8 @@ class PostCommentsState extends State<PostComments> {
 
     if (resultUrlGif != null) {
       try {
-        Random rnd = new Random();
         Map<String, dynamic> comment = {
-          "idComment": "idComment_${rnd.nextInt(100000000)}",
+          "idComment": "idComment_${new DateTime.now().millisecondsSinceEpoch}",
           "uidUser": _user['uid'],
           "idPost": widget.idPost,
           "urlGif": resultUrlGif,
