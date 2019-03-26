@@ -8,6 +8,7 @@ class Comments {
   Users user;
   String idPost;
   String comment;
+  String urlGif;
   String fecha;
   int timestamp;
 
@@ -17,6 +18,7 @@ class Comments {
   this.user,
   this.idPost,
   this.comment,
+  this.urlGif,
   this.fecha,
   this.timestamp);
 
@@ -31,6 +33,7 @@ class Comments {
     user['user'],
     user['idPost'],
     user['comment'],
+    user['urlGif'],
     user['fecha'],
     user['timestamp']);
     return insertComments(nuevoComments);
@@ -63,6 +66,7 @@ class Comments {
         user = json['user'],
         idPost = json['idPost'],
         comment = json['comment'],
+        urlGif = json['urlGif'],
         fecha = json['fecha'],
         timestamp = json['timestamp'];
 
@@ -73,6 +77,7 @@ class Comments {
       'user': user,
       'idPost': idPost,
       'comment': comment,
+      'urlGif': urlGif,
       'fecha': fecha,
       'timestamp': timestamp,
     };

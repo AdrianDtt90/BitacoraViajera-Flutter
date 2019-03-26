@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sandbox_flutter/Components/MiGiphy.dart';
 import 'package:sandbox_flutter/Entities/Users.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 
@@ -140,7 +141,7 @@ class PostCommentsState extends State<PostComments> {
       "idPost": widget.idPost,
       "comment": text,
       "fecha": getStringDateNow(),
-      "timestamp" : getDateFromString(getStringDateNow()).millisecondsSinceEpoch
+      "timestamp": getDateFromString(getStringDateNow()).millisecondsSinceEpoch
     };
     Comments.create(comment).then((value) {
       ChatMessage message = new ChatMessage(comment: value);
@@ -174,6 +175,15 @@ class PostCommentsState extends State<PostComments> {
                 icon: new Icon(Icons.send),
                 onPressed: () => _handleSubmit(_chatController.text),
               ),
+            ),
+            new Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: new IconButton(
+                icon: new Icon(Icons.gif),
+                onPressed: () {
+                  _enviarGif();
+                },
+              ),
             )
           ],
         ),
@@ -191,7 +201,10 @@ class PostCommentsState extends State<PostComments> {
             ? Center(
                 child: Container(
                     child: SizedBox(
-                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                      Color.fromRGBO(67, 170, 139, 1)),
+                ),
                 height: 50.0,
                 width: 50.0,
               )))
@@ -222,6 +235,61 @@ class PostCommentsState extends State<PostComments> {
                   ),
                 ],
               ));
+  }
+
+  void _enviarGif() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MiGiphy()),
+    );
+
+    if (result == null) {
+      try {
+        Random rnd = new Random();
+        Map<String, dynamic> comment = {
+          "idComment": "idComment_${rnd.nextInt(100000000)}",
+          "uidUser": _user['uid'],
+          "idPost": widget.idPost,
+          "comment": 'text', //GIF
+          "fecha": getStringDateNow(),
+          "timestamp":
+              getDateFromString(getStringDateNow()).millisecondsSinceEpoch
+        };
+        Comments.create(comment).then((value) {
+          ChatMessage message = new ChatMessage(comment: value);
+
+          setState(() {
+            _messages.insert(0, message);
+          });
+        });
+      } catch (e) {
+        errorGif();
+      }
+    } else {
+      errorGif();
+    }
+  }
+
+  void errorGif() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error"),
+          content: new Text("Ocurrió un error al intentar enviar el gif."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void actualizarComments() {

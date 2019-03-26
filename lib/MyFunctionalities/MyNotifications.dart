@@ -17,7 +17,9 @@ class NotificationSender {
       'Content-Type': 'application/json'
     };
 
-    Users.getOther().then((listUsers) {
+    var resultList = Users.getOther();
+    
+    return resultList.then((listUsers) {
 
       for (Users user in listUsers) {
         String data = json.encode({
