@@ -54,14 +54,17 @@ class _MiImageState extends State<MiImage> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                      Color.fromRGBO(67, 170, 139, 1)),
+                ),
                 height: 30.0,
                 width: 30.0,
               ),
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Image.network(url))
+                child: Center(child: Image.network(url)))
           ],
         );
       case 1:
@@ -69,7 +72,10 @@ class _MiImageState extends State<MiImage> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                      Color.fromRGBO(67, 170, 139, 1)),
+                ),
                 height: 30.0,
                 width: 30.0,
               ),
@@ -84,7 +90,10 @@ class _MiImageState extends State<MiImage> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                      Color.fromRGBO(67, 170, 139, 1)),
+                ),
                 height: 30.0,
                 width: 30.0,
               ),

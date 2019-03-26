@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sandbox_flutter/Components/MiGiphy.dart';
+import 'package:sandbox_flutter/Components/MiImage.dart';
 import 'package:sandbox_flutter/Entities/Users.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 
@@ -238,36 +239,36 @@ class PostCommentsState extends State<PostComments> {
   }
 
   void _enviarGif() async {
-    final result = await Navigator.push(
+    final resultUrlGif = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MiGiphy()),
     );
 
-    if (result == null) {
-      try {
-        Random rnd = new Random();
-        Map<String, dynamic> comment = {
-          "idComment": "idComment_${rnd.nextInt(100000000)}",
-          "uidUser": _user['uid'],
-          "idPost": widget.idPost,
-          "comment": 'text', //GIF
-          "fecha": getStringDateNow(),
-          "timestamp":
-              getDateFromString(getStringDateNow()).millisecondsSinceEpoch
-        };
-        Comments.create(comment).then((value) {
-          ChatMessage message = new ChatMessage(comment: value);
+    // if (resultUrlGif != null) {
+    //   try {
+    //     Random rnd = new Random();
+    //     Map<String, dynamic> comment = {
+    //       "idComment": "idComment_${rnd.nextInt(100000000)}",
+    //       "uidUser": _user['uid'],
+    //       "idPost": widget.idPost,
+    //       "urlGif": resultUrlGif,
+    //       "fecha": getStringDateNow(),
+    //       "timestamp":
+    //           getDateFromString(getStringDateNow()).millisecondsSinceEpoch
+    //     };
+    //     Comments.create(comment).then((value) {
+    //       ChatMessage message = new ChatMessage(comment: value);
 
-          setState(() {
-            _messages.insert(0, message);
-          });
-        });
-      } catch (e) {
-        errorGif();
-      }
-    } else {
-      errorGif();
-    }
+    //       setState(() {
+    //         _messages.insert(0, message);
+    //       });
+    //     });
+    //   } catch (e) {
+    //     errorGif();
+    //   }
+    // } else {
+    //   errorGif();
+    // }
   }
 
   void errorGif() {
@@ -390,7 +391,16 @@ class ChatMessage extends StatelessWidget {
                 ),
                 new Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(comment.comment),
+                  child: comment.urlGif != null
+                      ? Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                          height: 100,
+                          child: MiImage(
+                              currentUrl:
+                                  comment.urlGif,
+                              fileType: 0,
+                              listImages: []))
+                      : new Text(comment.comment),
                 )
               ],
             )
