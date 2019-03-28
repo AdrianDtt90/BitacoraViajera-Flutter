@@ -232,19 +232,25 @@ class PostCommentsState extends State<PostComments> {
                     height: 1.0,
                   ),
                   _messages.length == 0
-                      ? Padding(
-                          padding: EdgeInsets.only(top: 20.0),
-                          child: Text("No hay comentarios"),
+                      ? Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(top: 20.0),
+                              child: Text("No hay comentarios"),
+                            ),
+                            Container(
+                              child: Image.asset("assets/mundo.png"),
+                            ),
+                          ],
                         )
-                      : Container(),
-                  new Flexible(
-                    child: ListView.builder(
-                      padding: new EdgeInsets.all(8.0),
-                      reverse: true,
-                      itemBuilder: (_, int index) => _messages[index],
-                      itemCount: _messages.length,
-                    ),
-                  ),
+                      : new Flexible(
+                          child: ListView.builder(
+                            padding: new EdgeInsets.all(8.0),
+                            reverse: true,
+                            itemBuilder: (_, int index) => _messages[index],
+                            itemCount: _messages.length,
+                          ),
+                        ),
                 ],
               ));
   }

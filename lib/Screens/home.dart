@@ -19,6 +19,7 @@ import 'package:sandbox_flutter/Components/MiImage.dart';
 import 'package:sandbox_flutter/Components/MiListPosts.dart';
 import 'package:sandbox_flutter/Entities/Images.dart';
 import 'package:sandbox_flutter/Entities/Posts.dart';
+import 'package:sandbox_flutter/Entities/Sugerencias.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:sandbox_flutter/Screens/listPosts.dart';
@@ -118,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: 100.0,
                         height: 100.0,
                         decoration: new BoxDecoration(
+                            border: new Border.all(color: Colors.white, width: 2.0),
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.fill,
@@ -132,6 +134,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               decoration: BoxDecoration(
+                gradient: new LinearGradient(
+                  colors: [
+                    Color.fromRGBO(67, 170, 139, 1),
+                    Color.fromRGBO(72, 114, 155, 1),
+                  ],
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                ),
                 color: Color.fromRGBO(67, 170, 139, 1),
               ),
             ),
@@ -154,11 +164,20 @@ class _MyHomePageState extends State<MyHomePage> {
             //   },
             // ),
             ListTile(
+              title: Text('Enviar Sugerencia'),
+              onTap: () {
+                _enviarSugerencia();
+              },
+            ),
+            ListTile(
               title: Text('Cerrar Sesión'),
               onTap: () {
                 store.dispatch(new LogOutAction());
                 _signOut();
               },
+            ),
+            Container(
+              child: Image.asset("assets/cartel.png"),
             )
           ],
         ),
@@ -176,6 +195,87 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _enviarSugerencia() async {
+    final TextEditingController _sugerenciaController =
+        new TextEditingController();
+
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Sugerencia"),
+          content: new Wrap(
+            children: <Widget>[
+              new Text("Te invitamos a que nos envíes tu sugerenecia para mejorar nuestra app."),
+              new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                    hintText: "Escriba algo...", icon: Icon(Icons.comment)),
+                controller: _sugerenciaController,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            new FlatButton(
+              child: new Text("Enviar"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result) {
+      if (_sugerenciaController.text != '') {
+        Sugerencias.create({
+          "idSugerencia":
+              "idSugerencia_${new DateTime.now().millisecondsSinceEpoch}",
+          "uidUser": store.state['loggedUser']['uid'],
+          "nombreUsuario": store.state['loggedUser']['displayName'],
+          "emailUsuario": store.state['loggedUser']['email'],
+          "sugerencia": _sugerenciaController.text,
+          "fecha": new DateTime.now().toString()
+        }).then((value) {
+          _gracias();
+        }).catchError((e) {});
+      } else {
+        _gracias();
+      }
+    }
+  }
+
+  void _gracias() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("¡Graacias!"),
+          content: new Text("¡Muchas gracias por tu sugerencia!"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -225,7 +325,7 @@ class _FirstScreenState extends State<FirstScreen> {
         floatingActionButton: (_user == 'rRPOde1RJGRFfmfbr9C1td35r3S2' ||
                 _user == '9gw2PpIP6hVyOenRhk34g1m7GE03')
             ? FloatingActionButton(
-                backgroundColor: Color.fromRGBO(67, 170, 139, 1),
+                backgroundColor: Color.fromRGBO(72, 114, 155, 1),
                 onPressed: () {
                   _navigateToCreatePost(context);
                 },
@@ -308,7 +408,10 @@ class _SecondScreenState extends State<SecondScreen> {
                     BoxDecoration(color: Color.fromRGBO(232, 232, 232, 0.6)),
                 child: Center(
                     child: SizedBox(
-                  child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                        Color.fromRGBO(67, 170, 139, 1)),
+                  ),
                   height: 50.0,
                   width: 50.0,
                 )))
@@ -400,7 +503,10 @@ class _FourthScreenState extends State<FourthScreen> {
           decoration: BoxDecoration(color: Color.fromRGBO(232, 232, 232, 0.6)),
           child: Center(
               child: SizedBox(
-            child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(67, 170, 139, 1)),),
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(
+                  Color.fromRGBO(67, 170, 139, 1)),
+            ),
             height: 50.0,
             width: 50.0,
           )));

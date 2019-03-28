@@ -37,7 +37,6 @@ class _MiLikesState extends State<MiLikes> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
         margin: const EdgeInsets.only(right: 10.0),
         child: Row(children: <Widget>[
@@ -50,9 +49,9 @@ class _MiLikesState extends State<MiLikes> {
                   actualizarLikes();
                 });
               } else {
-                
                 Map<String, dynamic> like = {
-                  "idLike": "idLike_${new DateTime.now().millisecondsSinceEpoch}",
+                  "idLike":
+                      "idLike_${new DateTime.now().millisecondsSinceEpoch}",
                   "uidUser": _user['uid'],
                   "idPost": widget.idPost,
                 };
@@ -68,21 +67,22 @@ class _MiLikesState extends State<MiLikes> {
               });
             },
           ),
-          _cargando == true ?
-            Text('...')
-          : GestureDetector(
-            child: Text(
-                "${_cantLikes} Me ${_cantLikes == 1 ? 'Gusta' : 'Gustas'}"),
-            onTap: () {
-              if(_cargando == true) return false;
-              
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LikesList(listaLikes: _listaLikes)),
-              );
-            },
-          )
+          _cargando == true
+              ? Text('...')
+              : GestureDetector(
+                  child: Text(
+                      "${_cantLikes} Me ${_cantLikes == 1 ? 'Gusta' : 'Gustas'}"),
+                  onTap: () {
+                    if (_cargando == true) return false;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              LikesList(listaLikes: _listaLikes)),
+                    );
+                  },
+                )
         ]));
   }
 
@@ -122,7 +122,17 @@ class LikesList extends StatelessWidget {
         ),
         body: listaLikes == null || listaLikes.length == 0
             ? Center(
-                child: Text("No hay me gustas"),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Text("No hay me gustas"),
+                    ),
+                    Container(
+                      child: Image.asset("assets/travel.png"),
+                    ),
+                  ],
+                ),
               )
             : ListView(
                 children: getUsersLikes(),
