@@ -18,9 +18,8 @@ class NotificationSender {
     };
 
     var resultList = Users.getOther();
-    
-    return resultList.then((listUsers) {
 
+    return resultList.then((listUsers) {
       for (Users user in listUsers) {
         String data = json.encode({
           "to": user.notificationToken,
@@ -39,7 +38,6 @@ class NotificationSender {
           }
         });
       }
-
     });
   }
 }
@@ -78,6 +76,23 @@ class _NotificationsState extends State<Notifications> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
+        //message.values.first['title']
+        OverlayEntry notificacion;
+        notificacion = OverlayEntry(builder: (BuildContext context) {
+          return FunkyNotification(
+            entry: notificacion,
+            title: message.values.first['title'],
+          );
+        });
+
+        Navigator.of(context)
+            .overlay
+            .insert(notificacion);
+
+      
+// VER COMO CARAJO CERRAR ESTO
+
+        //overlay.remove();
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -95,5 +110,91 @@ class _NotificationsState extends State<Notifications> {
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
+  }
+}
+
+class FunkyNotification extends StatefulWidget {
+  OverlayEntry entry;
+  String title;
+
+  FunkyNotification({Key key, this.entry, this.title}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => FunkyNotificationState();
+}
+
+class FunkyNotificationState extends State<FunkyNotification>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<Offset> position;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 750));
+    position = Tween<Offset>(begin: Offset(0.0, -4.0), end: Offset.zero)
+        .animate(
+            CurvedAnimation(parent: controller, curve: Curves.bounceInOut));
+
+    controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Material(
+        color: Colors.transparent,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsets.only(top: 32.0),
+            child: SlideTransition(
+              position: position,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                decoration: ShapeDecoration(
+                    color: Color.fromRGBO(72, 114, 155, 1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0))),
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Wrap(
+                            children: <Widget>[
+                              Text(
+                                '¡Nueva Notificación!',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                widget.title,
+                                style: TextStyle(
+                                    color: Colors.white),
+                              )
+                            ],
+                          )),
+                    ),
+                    IconButton(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(0.0),
+                      icon: new Icon(Icons.cancel),
+                      onPressed: () {
+                        //Navigator.of(context).pop();
+                        widget.entry.remove();
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
