@@ -6,6 +6,7 @@ import 'package:sandbox_flutter/Components/MiGiphy.dart';
 import 'package:sandbox_flutter/Components/MiImage.dart';
 import 'package:sandbox_flutter/Entities/Users.dart';
 import 'package:sandbox_flutter/MyFunctionalities/MyFunctions.dart';
+import 'package:sandbox_flutter/MyFunctionalities/MyNotifications.dart';
 
 import 'package:sandbox_flutter/Redux/index.dart';
 import 'package:sandbox_flutter/Entities/Comments.dart';
@@ -144,10 +145,16 @@ class PostCommentsState extends State<PostComments> {
       "timestamp": getDateFromString(getStringDateNow()).millisecondsSinceEpoch
     };
     Comments.create(comment).then((value) {
-      ChatMessage message = new ChatMessage(comment: value);
+      NotificationSender.fetchNotification(
+              'Comentario de ' + store.state['loggedUser']['displayName'],
+              text,
+              'comment')
+          .then((result) {
+        ChatMessage message = new ChatMessage(comment: value);
 
-      setState(() {
-        _messages.insert(0, message);
+        setState(() {
+          _messages.insert(0, message);
+        });
       });
     });
   }
@@ -263,10 +270,16 @@ class PostCommentsState extends State<PostComments> {
               getDateFromString(getStringDateNow()).millisecondsSinceEpoch
         };
         Comments.create(comment).then((value) {
-          ChatMessage message = new ChatMessage(comment: value);
+          NotificationSender.fetchNotification(
+                  'Comentario de ' + store.state['loggedUser']['displayName'],
+                  resultUrlGif,
+                  'comment')
+              .then((result) {
+            ChatMessage message = new ChatMessage(comment: value);
 
-          setState(() {
-            _messages.insert(0, message);
+            setState(() {
+              _messages.insert(0, message);
+            });
           });
         });
       } catch (e) {

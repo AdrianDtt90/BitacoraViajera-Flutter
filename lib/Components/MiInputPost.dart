@@ -375,7 +375,7 @@ class _MiInputPostState extends State<MiInputPost> {
     //Publicamos
     Posts.create(postData).then((post) {
 
-      NotificationSender.fetchNotification('Nuevo: ' + post.titulo, post.descripcion).then((result) {
+      NotificationSender.fetchNotification('Publicación de ' + store.state['loggedUser']['displayName'], post.titulo, 'post').then((result) {
         setState(() {
           _uploadPost = false;
         });
